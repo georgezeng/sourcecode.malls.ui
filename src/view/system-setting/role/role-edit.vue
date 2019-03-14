@@ -9,7 +9,7 @@
         <Button @click="back" type="success">返回</Button>
       </div>
       <Form ref="form" :model="form" :rules="rules" :label-width="80">
-        <FormItem label="编号" prop="code">
+        <FormItem label="编码" prop="code">
           <Input v-model="form.code" :readonly="codeReadonly"></Input>
         </FormItem>
         <FormItem label="名称" prop="name">
@@ -62,6 +62,9 @@ export default {
       originUserLeftList: [],
       originUserRightList: [],
       rules: {
+        code: [
+          { required: true, message: '编码不能为空', trigger: 'blur' }
+        ],
         name: [
           { required: true, message: '角色名不能为空', trigger: 'blur' }
         ]

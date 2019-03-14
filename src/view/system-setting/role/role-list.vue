@@ -19,7 +19,7 @@
     </Modal>
 
     <Card>
-      <Input ref="searchInput" search enter-button @on-search="load"
+      <Input v-model="searchText" search enter-button @on-search="load"
              style="float: left; width: 200px; margin-bottom: 5px;"/>
       <Button @click="bulkDeleteModal=true" :disabled="deleteBtnDisabled" class="float-right" type="error">批量删除</Button>
       <Button @click="toAddView" class="float-right margin-right" type="primary">新增</Button>
@@ -56,6 +56,7 @@ export default {
           order: 'ASC'
         }
       },
+      searchText: '',
       total: 0,
       list: [],
       selection: [],
@@ -113,7 +114,7 @@ export default {
   },
   methods: {
     load () {
-      this.queryInfo.data = this.$refs.searchInput.$refs.input.value
+      this.queryInfo.data = this.searchText
       this.queryInfo.page.num = 1
       this.changePage()
     },
