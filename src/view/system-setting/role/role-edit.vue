@@ -21,7 +21,11 @@
         </FormItem>
         <FormItem label="权限">
           <MultiSelectors :leftList="authLeftList" :rightList="authRightList" :originLeftList="originAuthLeftList"
-                          :originRightList="originAuthRightList" @set-multi-selectors-data="setLists"/>
+                          :originRightList="originAuthRightList" @set-multi-selectors-data="setAuthLists"/>
+        </FormItem>
+        <FormItem label="用户">
+          <MultiSelectors :leftList="userLeftList" :rightList="userRightList" :originLeftList="originUserLeftList"
+                          :originRightList="originUserRightList" @set-multi-selectors-data="setUserLists"/>
         </FormItem>
       </Form>
     </Card>
@@ -31,6 +35,7 @@
 <script>
 import API from '@/api/role'
 import AuthAPI from '@/api/authority'
+import UserAPI from '@/api/users'
 import MultiSelectors from '@/components/multi-selectors/multi-selectors'
 import { Message } from 'iview'
 
@@ -47,11 +52,15 @@ export default {
         name: '',
         code: '',
         description: '',
-        authorities: []
+        authorities: [],
+        users: []
       },
       authorities: [],
       originAuthLeftList: [],
       originAuthRightList: [],
+      users: [],
+      originUserLeftList: [],
+      originUserRightList: [],
       rules: {
         name: [
           { required: true, message: '角色名不能为空', trigger: 'blur' }
@@ -67,44 +76,84 @@ export default {
           this.form = data
           let arr = []
           for (let i in data.authorities) {
-            let auth = data.authorities[i]
+            let item = data.authorities[i]
             arr.push({
-              key: auth.id,
-              text: auth.name,
+              key: item.id,
+              text: item.name,
               selected: false
             })
           }
           this.authRightList = arr
           this.originAuthRightList = arr.concat()
+          arr = []
+          for (let i in data.users) {
+            let item = data.users[i]
+            arr.push({
+              key: item.id,
+              text: item.username,
+              selected: false
+            })
+          }
+          this.userRightList = arr
+          this.originUserRightList = arr.concat()
           this.loading = false
         }).catch(ex => {
           this.loading = false
         })
       }
     },
-    loadAuthorities (searchText) {
+    loadAuthorities () {
       this.loading = true
       AuthAPI.list({
-        data: searchText ? '' : searchText,
+        data: null,
         page: {
           num: 1,
           size: 99999999,
-          property: 'code',
+          property: 'name',
           order: 'ASC'
         }
       }).then(result => {
         if (result.total > 0) {
           let arr = []
           for (let i in result.list) {
-            let auth = result.list[i]
+            let item = result.list[i]
             arr.push({
-              key: auth.id,
-              text: auth.name,
+              key: item.id,
+              text: item.name,
               selected: false
             })
           }
           this.authLeftList = arr
           this.originAuthLeftList = arr.concat()
+        }
+        this.loading = false
+      }).catch(ex => {
+        this.loading = false
+      })
+    },
+    loadUsers() {
+      this.loading = true
+      UserAPI.list({
+        data: null,
+        page: {
+          num: 1,
+          size: 99999999,
+          property: 'username',
+          order: 'ASC'
+        }
+      }).then(result => {
+        if (result.total > 0) {
+          let arr = []
+          for (let i in result.list) {
+            let item = result.list[i]
+            arr.push({
+              key: item.id,
+              text: item.username,
+              selected: false
+            })
+          }
+          this.userLeftList = arr
+          this.originUserLeftList = arr.concat()
         }
         this.loading = false
       }).catch(ex => {
@@ -127,12 +176,20 @@ export default {
         name: 'RoleList'
       })
     },
-    setLists (leftList, rightList, reload) {
+    setAuthLists (leftList, rightList, reload) {
       this.authLeftList = leftList
       this.authRightList = rightList
       if (reload) {
         this.originAuthLeftList = leftList.concat()
         this.originAuthRightList = rightList.concat()
+      }
+    },
+    setUserLists (leftList, rightList, reload) {
+      this.userLeftList = leftList
+      this.userRightList = rightList
+      if (reload) {
+        this.originUserLeftList = leftList.concat()
+        this.originUserRightList = rightList.concat()
       }
     }
   },
@@ -147,10 +204,10 @@ export default {
       get () {
         let arr = []
         for (let i in this.authorities) {
-          let auth = this.authorities[i]
+          let item = this.authorities[i]
           arr.push({
-            key: auth.id,
-            text: auth.name,
+            key: item.id,
+            text: item.name,
             selected: false
           })
         }
@@ -171,10 +228,10 @@ export default {
       get () {
         let arr = []
         for (let i in this.form.authorities) {
-          let auth = this.form.authorities[i]
+          let item = this.form.authorities[i]
           arr.push({
-            key: auth.id,
-            text: auth.name,
+            key: item.id,
+            text: item.name,
             selected: false
           })
         }
@@ -190,12 +247,61 @@ export default {
           })
         }
       }
+    },
+    userLeftList: {
+      get () {
+        let arr = []
+        for (let i in this.users) {
+          let item = this.users[i]
+          arr.push({
+            key: item.id,
+            text: item.username,
+            selected: false
+          })
+        }
+        return arr
+      },
+      set (arr) {
+        this.users = []
+        for (let i in arr) {
+          let item = arr[i]
+          this.users.push({
+            id: item.key,
+            username: item.text
+          })
+        }
+      }
+    },
+    userRightList: {
+      get () {
+        let arr = []
+        for (let i in this.form.users) {
+          let item = this.form.users[i]
+          arr.push({
+            key: item.id,
+            text: item.username,
+            selected: false
+          })
+        }
+        return arr
+      },
+      set (arr) {
+        this.form.users = []
+        for (let i in arr) {
+          let item = arr[i]
+          this.form.users.push({
+            id: item.key,
+            username: item.text
+          })
+        }
+      }
     }
   },
   mounted: function () {
     this.form.id = this.$router.currentRoute.params.id
     this.loadData()
     this.loadAuthorities()
+    this.loadUsers()
   }
 }
 </script>
