@@ -50,9 +50,7 @@
     "mockjs": "^1.0.1-beta3",
     "vue-template-compiler": "^2.5.13",
     "webpack-dev-server": ">=3.1.11",
-    "devDependencies": {
-      "cryptiles": ">=4.1.2"
-    }
+    "cryptiles": ">=4.1.2"
   },
   "browserslist": [
     "> 1%",
