@@ -63,6 +63,8 @@ export default {
         {text: '禁用中', value: false}
       ],
       roles: [],
+      roleLeftList: [],
+      roleRightList: [],
       originRoleLeftList: [],
       originRoleRightList: [],
       rules: {
@@ -149,6 +151,27 @@ export default {
       if (reload) {
         this.originRoleLeftList = leftList.concat()
         this.originRoleRightList = rightList.concat()
+
+        this.form.roles = []
+        for (let i in rightList) {
+          let item = rightList[i]
+          this.form.roles.push({
+            id: item.key,
+            name: item.text,
+            selected: item.selected
+          })
+        }
+
+
+        this.roles = []
+        for (let i in leftList) {
+          let item = leftList[i]
+          this.roles.push({
+            id: item.key,
+            name: item.text,
+            selected: item.selected
+          })
+        }
       }
     }
   },
@@ -158,56 +181,6 @@ export default {
     },
     readOnly () {
       return this.form.id != null && this.form.id !== '0'
-    },
-    roleLeftList: {
-      get () {
-        let arr = []
-        for (let i in this.roles) {
-          let item = this.roles[i]
-          arr.push({
-            key: item.id,
-            text: item.name,
-            selected: item.selected ? true : false
-          })
-        }
-        return arr
-      },
-      set (arr) {
-        this.roles = []
-        for (let i in arr) {
-          let item = arr[i]
-          this.roles.push({
-            id: item.key,
-            name: item.text,
-            selected: item.selected
-          })
-        }
-      }
-    },
-    roleRightList: {
-      get () {
-        let arr = []
-        for (let i in this.form.roles) {
-          let item = this.form.roles[i]
-          arr.push({
-            key: item.id,
-            text: item.name,
-            selected: item.selected ? true : false
-          })
-        }
-        return arr
-      },
-      set (arr) {
-        this.form.roles = []
-        for (let i in arr) {
-          let item = arr[i]
-          this.form.roles.push({
-            id: item.key,
-            name: item.text,
-            selected: item.selected
-          })
-        }
-      }
     }
   },
   mounted: function () {

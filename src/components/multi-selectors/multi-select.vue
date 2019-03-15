@@ -7,7 +7,7 @@
 
 <template>
   <div class="float-left">
-    <Input placeholder="快速搜索" v-model="searchText" clearable @on-change="search"/>
+    <Input placeholder="快速搜索" v-model="searchText" clearable />
     <ul class="outline-border"
         style="list-style: none; padding: 10px; height: 300px; scroll: auto;">
       <li ref="item" v-for="(item, index) in filteredList" :key="item.key" style="cursor: pointer; padding: 0 5px;"
@@ -22,11 +22,9 @@
   export default {
     name: 'MultiSelect',
     props: [
-      'isLeft',
-      'leftList',
-      'rightList',
-      'originLeftList',
-      'originRightList'
+      'list',
+      'originList',
+      'isLeft'
     ],
     components: {},
     data() {
@@ -35,70 +33,38 @@
       }
     },
     computed: {
-      filteredList() {
-        let arr = null
-        if (this.isLeft) {
-          if (this.rightList && this.rightList.length > 0) {
-            arr = []
-            for (let j in this.leftList) {
-              let found = false
-              let item = this.leftList[j]
-              for (let i in this.rightList) {
-                let filterItem = this.rightList[i]
-                if (item.key === filterItem.key) {
-                  found = true
-                  break
-                }
-              }
-              if (!found) {
+      filteredList: {
+        get() {
+          return this.list
+        },
+        set(text) {
+          let arr = []
+          if (text) {
+            for (let i in this.originList) {
+              let item = this.originList[i]
+              if (item.text.indexOf(text) > -1) {
                 arr.push(item)
               }
             }
           } else {
-            arr = this.leftList
+            arr = this.originList
           }
-        } else {
-          arr = this.rightList
+          this.$emit('setList', arr, this.isLeft)
         }
-        return arr
+      }
+    },
+    watch: {
+      searchText(text) {
+        this.filteredList = text;
       }
     },
     methods: {
       triggerItem(item, index) {
         item.selected = !item.selected
-        if(item.selected) {
-          this.$refs.item[index].className = 'selected';
+        if (item.selected) {
+          this.$refs.item[index].className = 'selected'
         } else {
-          this.$refs.item[index].className = '';
-        }
-      },
-      search() {
-        if (this.searchText) {
-          if (this.isLeft) {
-            let arr = []
-            for (let i in this.originLeftList) {
-              let item = this.originLeftList[i]
-              if (item.text.indexOf(this.searchText) > -1) {
-                arr.push(item)
-              }
-            }
-            this.$emit('setLists', arr, this.rightList)
-          } else {
-            let arr = []
-            for (let i in this.originRightList) {
-              let item = this.originRightList[i]
-              if (item.text.indexOf(this.searchText) > -1) {
-                arr.push(item)
-              }
-            }
-            this.$emit('setLists', this.leftList, arr)
-          }
-        } else {
-          if (this.isLeft) {
-            this.$emit('setLists', this.originLeftList, this.rightList)
-          } else {
-            this.$emit('setLists', this.leftList, this.originRightList)
-          }
+          this.$refs.item[index].className = ''
         }
       }
     }

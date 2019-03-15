@@ -6,9 +6,7 @@
 
 <template>
   <div>
-    <MultiSelect :leftList="leftList" :rightList="rightList" :originLeftList="originLeftList"
-                 :originRightList="originRightList" :isLeft="true" @setLists="setLists"
-                 class="multi-input"/>
+    <MultiSelect :list="leftFilterList" :originList="originLeftList" :isLeft="true" @setList="setList" class="multi-input"/>
     <div class="float-left" style="margin: 50px;">
       <Button style="display: block; margin-bottom: 10px;" @click="addItems">
         <Icon type="ios-arrow-forward"/>
@@ -17,8 +15,7 @@
         <Icon type="ios-arrow-back"/>
       </Button>
     </div>
-    <MultiSelect :leftList="leftList" :rightList="rightList" :originLeftList="originLeftList"
-                 :originRightList="originRightList" :isLeft="false" @setLists="setLists"
+    <MultiSelect :list="rightList" :originList="originRightList" :isLeft="false" @setList="setList"
                  class="multi-input"/>
   </div>
 </template>
@@ -44,8 +41,9 @@
       addItems() {
         let leftArr = []
         let rightArr = this.rightList.concat()
-        for (let i in this.leftList) {
-          let item = this.leftList[i]
+        let leftList = this.leftFilterList
+        for (let i in leftList) {
+          let item = leftList[i]
           if (!item.selected) {
             leftArr.push(item)
           } else {
@@ -67,7 +65,7 @@
         this.$emit('set-multi-selectors-data', leftArr, rightArr, true)
       },
       removeItems() {
-        let leftArr = this.leftList.concat()
+        let leftArr = this.leftFilterList.concat()
         let rightArr = []
         for (let i in this.rightList) {
           let item = this.rightList[i]
@@ -91,8 +89,34 @@
         }
         this.$emit('set-multi-selectors-data', leftArr, rightArr, true)
       },
-      setLists(leftArr, rightArr) {
-        this.$emit('set-multi-selectors-data', leftArr, rightArr, false)
+      setList(list, isLeft) {
+        if (isLeft) {
+          this.$emit('set-multi-selectors-data', list, this.rightList, false)
+        } else {
+          this.$emit('set-multi-selectors-data', this.leftFilterList, list, false)
+        }
+      }
+    },
+    computed: {
+      leftFilterList: {
+        get() {
+          let arr = [];
+          for (let j in this.leftList) {
+            let found = false
+            let leftItem = this.leftList[j]
+            for (let i in this.rightList) {
+              let rightItem = this.rightList[i]
+              if (leftItem.key === rightItem.key) {
+                found = true
+                break
+              }
+            }
+            if (!found) {
+              arr.push(leftItem)
+            }
+          }
+          return arr;
+        }
       }
     }
   }
