@@ -125,12 +125,34 @@ export default [
       },
       {
         path: 'Authority',
-        name: 'Authority',
+        name: 'AuthorityManage',
+        component: Blank,
         meta: {
           icon: 'md-funnel',
-          title: '权限列表'
+          title: '权限管理'
         },
-        component: () => import('@/view/system-setting/authority/authority-list.vue')
+        children: [
+          {
+            path: 'List',
+            name: 'AuthorityList',
+            meta: {
+              hideInBread: true,
+              icon: 'md-funnel',
+              title: '权限列表'
+            },
+            component: () => import('@/view/system-setting/authority/authority-list.vue')
+          },
+          {
+            path: 'Edit/:id',
+            name: 'AuthorityEdit',
+            meta: {
+              hideInMenu: true,
+              icon: 'md-funnel',
+              title: '权限编辑'
+            },
+            component: () => import('@/view/system-setting/authority/authority-edit.vue')
+          }
+        ]
       }
     ]
   },

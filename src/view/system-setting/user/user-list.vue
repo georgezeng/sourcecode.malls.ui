@@ -9,7 +9,7 @@
         <p>确定要删除选中的记录吗?</p>
         <ul style="list-style: none;">
           <li v-for="item in selection">
-            {{ item.name }}
+            {{ item.username }}
           </li>
         </ul>
       </div>
