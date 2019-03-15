@@ -36,6 +36,11 @@ function handleError (ex) {
         name: 'error_401'
       })
       return
+    case 302:
+      router.push({
+        name: 'login'
+      })
+      return
   }
   alertError(ex.response && ex.response.data)
 }

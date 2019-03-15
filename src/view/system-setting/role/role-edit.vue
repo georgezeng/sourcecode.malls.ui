@@ -72,7 +72,7 @@ export default {
     }
   },
   methods: {
-    loadData () {
+    load () {
       if (this.form.id) {
         this.loading = true
         API.load(this.form.id).then(data => {
@@ -198,10 +198,10 @@ export default {
   },
   computed: {
     action () {
-      return this.form.id ? '编辑' : '新增'
+      return !this.readOnly ? '编辑' : '新增'
     },
-    codeReadonly () {
-      return this.form.id != null
+    readOnly () {
+      return this.form.id != null && this.form.id !== '0'
     },
     authLeftList: {
       get () {
@@ -211,7 +211,7 @@ export default {
           arr.push({
             key: item.id,
             text: item.name,
-            selected: false
+            selected: item.selected ? true : false
           })
         }
         return arr
@@ -222,7 +222,8 @@ export default {
           let item = arr[i]
           this.authorities.push({
             id: item.key,
-            name: item.text
+            name: item.text,
+            selected: item.selected
           })
         }
       }
@@ -235,7 +236,7 @@ export default {
           arr.push({
             key: item.id,
             text: item.name,
-            selected: false
+            selected: item.selected ? true : false
           })
         }
         return arr
@@ -246,7 +247,8 @@ export default {
           let item = arr[i]
           this.form.authorities.push({
             id: item.key,
-            name: item.text
+            name: item.text,
+            selected: item.selected
           })
         }
       }
@@ -259,7 +261,7 @@ export default {
           arr.push({
             key: item.id,
             text: item.username,
-            selected: false
+            selected: item.selected ? true : false
           })
         }
         return arr
@@ -270,7 +272,8 @@ export default {
           let item = arr[i]
           this.users.push({
             id: item.key,
-            username: item.text
+            username: item.text,
+            selected: item.selected
           })
         }
       }
@@ -283,7 +286,7 @@ export default {
           arr.push({
             key: item.id,
             text: item.username,
-            selected: false
+            selected: item.selected ? true : false
           })
         }
         return arr
@@ -294,7 +297,8 @@ export default {
           let item = arr[i]
           this.form.users.push({
             id: item.key,
-            username: item.text
+            username: item.text,
+            selected: item.selected
           })
         }
       }
@@ -302,7 +306,8 @@ export default {
   },
   mounted: function () {
     this.form.id = this.$router.currentRoute.params.id
-    this.loadData()
+    this.form.id = this.form.id !== '0' ? this.form.id : null;
+    this.load()
     this.loadAuthorities()
     this.loadUsers()
   }

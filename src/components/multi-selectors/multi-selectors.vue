@@ -24,76 +24,76 @@
 </template>
 
 <script>
-import MultiSelect from '@/components/multi-select/multi-select'
+  import MultiSelect from './multi-select'
 
-export default {
-  name: 'MultiSelectors',
-  props: [
-    'leftList',
-    'rightList',
-    'originLeftList',
-    'originRightList'
-  ],
-  components: {
-    MultiSelect
-  },
-  data () {
-    return {}
-  },
-  methods: {
-    addItems () {
-      let leftArr = []
-      let rightArr = this.rightList.concat()
-      for (let i in this.leftList) {
-        let item = this.leftList[i]
-        if (!item.selected) {
-          leftArr.push(item)
-        } else {
-          let found = false
-          for (let j in rightArr) {
-            let rightItem = rightArr[j]
-            if (rightItem.key == item.key) {
-              found = true
-              item = rightItem
-              break
-            }
-          }
-          item.selected = false
-          if (!found) {
-            rightArr.push(item)
-          }
-        }
-      }
-      this.$emit('set-multi-selectors-data', leftArr, rightArr, true)
+  export default {
+    name: 'MultiSelectors',
+    props: [
+      'leftList',
+      'rightList',
+      'originLeftList',
+      'originRightList'
+    ],
+    components: {
+      MultiSelect
     },
-    removeItems () {
-      let leftArr = this.leftList.concat()
-      let rightArr = []
-      for (let i in this.rightList) {
-        let item = this.rightList[i]
-        if (!item.selected) {
-          rightArr.push(item)
-        } else {
-          let found = false
-          for (let j in leftArr) {
-            let leftItem = leftArr[j]
-            if (leftItem.key == item.key) {
-              found = true
-              item = leftItem
-              break
-            }
-          }
-          item.selected = false
-          if (!found) {
+    data() {
+      return {}
+    },
+    methods: {
+      addItems() {
+        let leftArr = []
+        let rightArr = this.rightList.concat()
+        for (let i in this.leftList) {
+          let item = this.leftList[i]
+          if (!item.selected) {
             leftArr.push(item)
+          } else {
+            let found = false
+            for (let j in rightArr) {
+              let rightItem = rightArr[j]
+              if (rightItem.key == item.key) {
+                found = true
+                item = rightItem
+                break
+              }
+            }
+            if (!found) {
+              item.selected = false
+              rightArr.push(item)
+            }
           }
         }
+        this.$emit('set-multi-selectors-data', leftArr, rightArr, true)
+      },
+      removeItems() {
+        let leftArr = this.leftList.concat()
+        let rightArr = []
+        for (let i in this.rightList) {
+          let item = this.rightList[i]
+          if (!item.selected) {
+            rightArr.push(item)
+          } else {
+            let found = false
+            for (let j in leftArr) {
+              let leftItem = leftArr[j]
+              if (leftItem.key == item.key) {
+                found = true
+                item = leftItem
+                break
+              }
+            }
+            if (!found) {
+              item.selected = false
+              leftArr.push(item)
+            }
+          }
+        }
+        this.$emit('set-multi-selectors-data', leftArr, rightArr, true)
+      },
+      setLists(leftArr, rightArr) {
+        this.$emit('set-multi-selectors-data', leftArr, rightArr, false)
       }
-      this.$emit('set-multi-selectors-data', leftArr, rightArr, true)
-    },
-    setLists (leftArr, rightArr) {
-      this.$emit('set-multi-selectors-data', leftArr, rightArr, false)
     }
   }
-}
 </script>

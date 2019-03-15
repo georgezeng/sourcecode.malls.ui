@@ -63,12 +63,34 @@ export default [
     children: [
       {
         path: 'User',
-        name: 'User',
+        name: 'UserManage',
+        component: Blank,
         meta: {
           icon: 'md-funnel',
-          title: '用户列表'
+          title: '用户管理'
         },
-        component: () => import('@/view/system-setting/user/user-list.vue')
+        children: [
+          {
+            path: 'List',
+            name: 'UserList',
+            meta: {
+              hideInBread: true,
+              icon: 'md-funnel',
+              title: '用户列表'
+            },
+            component: () => import('@/view/system-setting/user/user-list.vue')
+          },
+          {
+            path: 'Edit/:id',
+            name: 'UserEdit',
+            meta: {
+              hideInMenu: true,
+              icon: 'md-funnel',
+              title: '用户编辑'
+            },
+            component: () => import('@/view/system-setting/user/user-edit.vue')
+          }
+        ]
       },
       {
         path: 'Role',
@@ -90,7 +112,7 @@ export default [
             component: () => import('@/view/system-setting/role/role-list.vue')
           },
           {
-            path: 'Edit',
+            path: 'Edit/:id',
             name: 'RoleEdit',
             meta: {
               hideInMenu: true,

@@ -166,19 +166,18 @@
         this.deleteData(this.selection)
       },
       deleteData(selection) {
-        let self = this
         this.loading = true
         let ids = []
         selection.forEach(item => {
           ids.push(item.id)
         })
         API.delete(ids).then(res => {
-          self.bulkDeleteModal = false
+          this.bulkDeleteModal = false
           Message.success('删除成功')
-          self.load()
+          this.load()
         }).catch(ex => {
-          self.bulkDeleteModal = false
-          self.loading = false
+          this.bulkDeleteModal = false
+          this.loading = false
         })
       },
       enableDeleteBtn(selection) {
@@ -195,7 +194,7 @@
         }
       },
       toAddView() {
-        this.toEditView(null)
+        this.toEditView(0)
       },
       toEditView(id) {
         this.$router.push({
@@ -215,6 +214,7 @@
         API.save(data).then(res => {
           this.loading = false
           Message.success(action + '成功')
+          this.load()
         }).catch(ex => {
           this.loading = false
         })
