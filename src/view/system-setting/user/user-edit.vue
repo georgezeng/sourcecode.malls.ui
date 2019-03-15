@@ -162,7 +162,6 @@ export default {
           })
         }
 
-
         this.roles = []
         for (let i in leftList) {
           let item = leftList[i]

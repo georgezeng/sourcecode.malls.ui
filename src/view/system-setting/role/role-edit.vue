@@ -56,9 +56,13 @@ export default {
         users: []
       },
       authorities: [],
+      authLeftList: [],
+      authRightList: [],
       originAuthLeftList: [],
       originAuthRightList: [],
       users: [],
+      userLeftList: [],
+      userRightList: [],
       originUserLeftList: [],
       originUserRightList: [],
       rules: {
@@ -185,6 +189,26 @@ export default {
       if (reload) {
         this.originAuthLeftList = leftList.concat()
         this.originAuthRightList = rightList.concat()
+
+        this.form.authorities = []
+        for (let i in rightList) {
+          let item = rightList[i]
+          this.form.authorities.push({
+            id: item.key,
+            name: item.text,
+            selected: item.selected
+          })
+        }
+
+        this.authorities = []
+        for (let i in leftList) {
+          let item = leftList[i]
+          this.authorities.push({
+            id: item.key,
+            name: item.text,
+            selected: item.selected
+          })
+        }
       }
     },
     setUserLists (leftList, rightList, reload) {
@@ -193,6 +217,26 @@ export default {
       if (reload) {
         this.originUserLeftList = leftList.concat()
         this.originUserRightList = rightList.concat()
+
+        this.form.users = []
+        for (let i in rightList) {
+          let item = rightList[i]
+          this.form.users.push({
+            id: item.key,
+            username: item.text,
+            selected: item.selected
+          })
+        }
+
+        this.users = []
+        for (let i in leftList) {
+          let item = leftList[i]
+          this.users.push({
+            id: item.key,
+            username: item.text,
+            selected: item.selected
+          })
+        }
       }
     }
   },
@@ -202,106 +246,6 @@ export default {
     },
     readOnly () {
       return this.form.id != null && this.form.id !== '0'
-    },
-    authLeftList: {
-      get () {
-        let arr = []
-        for (let i in this.authorities) {
-          let item = this.authorities[i]
-          arr.push({
-            key: item.id,
-            text: item.name,
-            selected: item.selected ? true : false
-          })
-        }
-        return arr
-      },
-      set (arr) {
-        this.authorities = []
-        for (let i in arr) {
-          let item = arr[i]
-          this.authorities.push({
-            id: item.key,
-            name: item.text,
-            selected: item.selected
-          })
-        }
-      }
-    },
-    authRightList: {
-      get () {
-        let arr = []
-        for (let i in this.form.authorities) {
-          let item = this.form.authorities[i]
-          arr.push({
-            key: item.id,
-            text: item.name,
-            selected: item.selected ? true : false
-          })
-        }
-        return arr
-      },
-      set (arr) {
-        this.form.authorities = []
-        for (let i in arr) {
-          let item = arr[i]
-          this.form.authorities.push({
-            id: item.key,
-            name: item.text,
-            selected: item.selected
-          })
-        }
-      }
-    },
-    userLeftList: {
-      get () {
-        let arr = []
-        for (let i in this.users) {
-          let item = this.users[i]
-          arr.push({
-            key: item.id,
-            text: item.username,
-            selected: item.selected ? true : false
-          })
-        }
-        return arr
-      },
-      set (arr) {
-        this.users = []
-        for (let i in arr) {
-          let item = arr[i]
-          this.users.push({
-            id: item.key,
-            username: item.text,
-            selected: item.selected
-          })
-        }
-      }
-    },
-    userRightList: {
-      get () {
-        let arr = []
-        for (let i in this.form.users) {
-          let item = this.form.users[i]
-          arr.push({
-            key: item.id,
-            text: item.username,
-            selected: item.selected ? true : false
-          })
-        }
-        return arr
-      },
-      set (arr) {
-        this.form.users = []
-        for (let i in arr) {
-          let item = arr[i]
-          this.form.users.push({
-            id: item.key,
-            username: item.text,
-            selected: item.selected
-          })
-        }
-      }
     }
   },
   mounted: function () {
