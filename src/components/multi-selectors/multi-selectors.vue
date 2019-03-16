@@ -100,6 +100,7 @@
     computed: {
       leftFilterList: {
         get() {
+          console.log('test...')
           let arr = [];
           for (let j in this.leftList) {
             let found = false

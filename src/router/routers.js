@@ -24,7 +24,8 @@ export default [
     name: 'login',
     meta: {
       title: '登录',
-      hideInMenu: true
+      hideInMenu: true,
+      notCache: true
     },
     component: () => import('@/view/login/login.vue')
   },
@@ -57,110 +58,79 @@ export default [
     name: 'SystemSetting',
     meta: {
       icon: 'md-menu',
-      title: '系统设置'
+      title: '系统设置',
+      notCache: true
     },
     component: Main,
     children: [
       {
-        path: 'User',
-        name: 'UserManage',
-        component: Blank,
+        path: 'User/List',
+        name: 'UserList',
+        component: () => import('@/view/system-setting/user/user-list.vue'),
         meta: {
           icon: 'md-funnel',
-          title: '用户管理'
-        },
-        children: [
-          {
-            path: 'List',
-            name: 'UserList',
-            meta: {
-              hideInBread: true,
-              icon: 'md-funnel',
-              title: '用户列表',
-              access: ['AUTH_SUPER_ADMIN', 'AUTH_USER_LIST_PAGE']
-            },
-            component: () => import('@/view/system-setting/user/user-list.vue')
-          },
-          {
-            path: 'Edit/:id',
-            name: 'UserEdit',
-            meta: {
-              hideInMenu: true,
-              icon: 'md-funnel',
-              title: '用户编辑',
-              access: ['AUTH_SUPER_ADMIN', 'AUTH_USER_EDIT_PAGE']
-            },
-            component: () => import('@/view/system-setting/user/user-edit.vue')
-          }
-        ]
+          title: '用户列表',
+          access: ['AUTH_SUPER_ADMIN', 'AUTH_USER_LIST_PAGE'],
+          notCache: true
+        }
       },
       {
-        path: 'Role',
-        name: 'RoleManage',
-        component: Blank,
+        path: 'User/Edit/:id',
+        name: 'UserEdit',
         meta: {
+          hideInMenu: true,
           icon: 'md-funnel',
-          title: '角色管理',
-          access: ['AUTH_SUPER_ADMIN', 'AUTH_ROLE_LIST_PAGE']
+          title: '用户编辑',
+          access: ['AUTH_SUPER_ADMIN', 'AUTH_USER_EDIT_PAGE'],
+          notCache: true
         },
-        children: [
-          {
-            path: 'List',
-            name: 'RoleList',
-            meta: {
-              hideInBread: true,
-              icon: 'md-funnel',
-              title: '角色列表',
-              access: ['AUTH_SUPER_ADMIN', 'AUTH_ROLE_LIST_PAGE']
-            },
-            component: () => import('@/view/system-setting/role/role-list.vue')
-          },
-          {
-            path: 'Edit/:id',
-            name: 'RoleEdit',
-            meta: {
-              hideInMenu: true,
-              icon: 'md-funnel',
-              title: '角色编辑',
-              access: ['AUTH_SUPER_ADMIN', 'AUTH_ROLE_EDIT_PAGE']
-            },
-            component: () => import('@/view/system-setting/role/role-edit.vue')
-          }
-        ]
+        component: () => import('@/view/system-setting/user/user-edit.vue')
       },
       {
-        path: 'Authority',
-        name: 'AuthorityManage',
-        component: Blank,
+        path: 'Role/List',
+        name: 'RoleList',
+        component: () => import('@/view/system-setting/role/role-list.vue'),
         meta: {
           icon: 'md-funnel',
-          title: '权限管理',
-          access: ['AUTH_SUPER_ADMIN', 'AUTH_AUTHORITY_LIST_PAGE']
+          title: '角色列表',
+          access: ['AUTH_SUPER_ADMIN', 'AUTH_ROLE_LIST_PAGE'],
+          notCache: true
+        }
+      },
+      {
+        path: 'Role/Edit/:id',
+        name: 'RoleEdit',
+        meta: {
+          hideInMenu: true,
+          icon: 'md-funnel',
+          title: '角色编辑',
+          access: ['AUTH_SUPER_ADMIN', 'AUTH_ROLE_EDIT_PAGE'],
+          notCache: true
         },
-        children: [
-          {
-            path: 'List',
-            name: 'AuthorityList',
-            meta: {
-              hideInBread: true,
-              icon: 'md-funnel',
-              title: '权限列表',
-              access: ['AUTH_SUPER_ADMIN', 'AUTH_AUTHORITY_LIST_PAGE']
-            },
-            component: () => import('@/view/system-setting/authority/authority-list.vue')
-          },
-          {
-            path: 'Edit/:id',
-            name: 'AuthorityEdit',
-            meta: {
-              hideInMenu: true,
-              icon: 'md-funnel',
-              title: '权限编辑',
-              access: ['AUTH_SUPER_ADMIN', 'AUTH_AUTHORITY_EDIT_PAGE']
-            },
-            component: () => import('@/view/system-setting/authority/authority-edit.vue')
-          }
-        ]
+        component: () => import('@/view/system-setting/role/role-edit.vue')
+      },
+      {
+        path: 'Authority/List',
+        name: 'AuthorityList',
+        component: () => import('@/view/system-setting/authority/authority-list.vue'),
+        meta: {
+          icon: 'md-funnel',
+          title: '权限列表',
+          access: ['AUTH_SUPER_ADMIN', 'AUTH_AUTHORITY_LIST_PAGE'],
+          notCache: true
+        }
+      },
+      {
+        path: 'Authority/Edit/:id',
+        name: 'AuthorityEdit',
+        meta: {
+          hideInMenu: true,
+          icon: 'md-funnel',
+          title: '权限编辑',
+          access: ['AUTH_SUPER_ADMIN', 'AUTH_AUTHORITY_EDIT_PAGE'],
+          notCache: true
+        },
+        component: () => import('@/view/system-setting/authority/authority-edit.vue')
       }
     ]
   },

@@ -69,11 +69,14 @@
         originRoleRightList: [],
         rules: {
           username: [
-            {required: true, message: '用户名不能为空', trigger: 'change'}
+            {required: true, message: '用户名不能为空', trigger: 'change'},
+            {min: 3, message: '用户名不能少于3位', trigger: 'change'},
+            {max: 15, message: '用户名不能多于15位', trigger: 'change'}
           ],
           email: [
             {required: true, message: '邮箱不能为空', trigger: 'change'},
-            {type: 'email', message: '邮箱格式不正确', trigger: 'change'}
+            {type: 'email', message: '邮箱格式不正确', trigger: 'change'},
+            {max: 50, message: '邮箱不能多于50位', trigger: 'change'}
           ],
           password: [
             {required: !this.readOnly, message: '密码不能为空', trigger: 'change'},
@@ -82,7 +85,8 @@
               pattern: /^(?=.*[0-9].*)(?=.*[A-Za-z].*).{8,}$/,
               message: '密码必须数字+字母（区分大小写）并且不少于8位',
               trigger: 'change'
-            }
+            },
+            {max: 20, message: '密码不能多于20位', trigger: 'change'}
           ],
           mobile: [
             {type: 'string', pattern: /^\d{11}$/, message: '手机号必须是11位数字', trigger: 'change'}
