@@ -9,7 +9,7 @@
   <div class="float-left">
     <Input placeholder="快速搜索" v-model="searchText" clearable />
     <ul class="outline-border"
-        style="list-style: none; padding: 10px; height: 300px; scroll: auto;">
+        style="list-style: none; padding: 10px; height: 300px; overflow: auto;">
       <li ref="item" v-for="(item, index) in filteredList" :key="item.key" style="cursor: pointer; padding: 0 5px;"
           @click="triggerItem(item, index)">
         {{ item.text }}
