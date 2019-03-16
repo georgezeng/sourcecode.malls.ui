@@ -67,7 +67,8 @@ export default [
         component: Blank,
         meta: {
           icon: 'md-funnel',
-          title: '用户管理'
+          title: '用户管理',
+          access: ['AUTH_SUPER_ADMIN', 'AUTH_USER_LIST_PAGE']
         },
         children: [
           {
@@ -76,7 +77,8 @@ export default [
             meta: {
               hideInBread: true,
               icon: 'md-funnel',
-              title: '用户列表'
+              title: '用户列表',
+              access: ['AUTH_SUPER_ADMIN', 'AUTH_USER_LIST_PAGE']
             },
             component: () => import('@/view/system-setting/user/user-list.vue')
           },
@@ -86,7 +88,8 @@ export default [
             meta: {
               hideInMenu: true,
               icon: 'md-funnel',
-              title: '用户编辑'
+              title: '用户编辑',
+              access: ['AUTH_SUPER_ADMIN', 'AUTH_USER_EDIT_PAGE']
             },
             component: () => import('@/view/system-setting/user/user-edit.vue')
           }
@@ -98,7 +101,8 @@ export default [
         component: Blank,
         meta: {
           icon: 'md-funnel',
-          title: '角色管理'
+          title: '角色管理',
+          access: ['AUTH_SUPER_ADMIN', 'AUTH_ROLE_LIST_PAGE']
         },
         children: [
           {
@@ -107,7 +111,8 @@ export default [
             meta: {
               hideInBread: true,
               icon: 'md-funnel',
-              title: '角色列表'
+              title: '角色列表',
+              access: ['AUTH_SUPER_ADMIN', 'AUTH_ROLE_LIST_PAGE']
             },
             component: () => import('@/view/system-setting/role/role-list.vue')
           },
@@ -117,7 +122,8 @@ export default [
             meta: {
               hideInMenu: true,
               icon: 'md-funnel',
-              title: '角色编辑'
+              title: '角色编辑',
+              access: ['AUTH_SUPER_ADMIN', 'AUTH_ROLE_EDIT_PAGE']
             },
             component: () => import('@/view/system-setting/role/role-edit.vue')
           }
@@ -129,7 +135,8 @@ export default [
         component: Blank,
         meta: {
           icon: 'md-funnel',
-          title: '权限管理'
+          title: '权限管理',
+          access: ['AUTH_SUPER_ADMIN', 'AUTH_AUTHORITY_LIST_PAGE']
         },
         children: [
           {
@@ -138,7 +145,8 @@ export default [
             meta: {
               hideInBread: true,
               icon: 'md-funnel',
-              title: '权限列表'
+              title: '权限列表',
+              access: ['AUTH_SUPER_ADMIN', 'AUTH_AUTHORITY_LIST_PAGE']
             },
             component: () => import('@/view/system-setting/authority/authority-list.vue')
           },
@@ -148,7 +156,8 @@ export default [
             meta: {
               hideInMenu: true,
               icon: 'md-funnel',
-              title: '权限编辑'
+              title: '权限编辑',
+              access: ['AUTH_SUPER_ADMIN', 'AUTH_AUTHORITY_EDIT_PAGE']
             },
             component: () => import('@/view/system-setting/authority/authority-edit.vue')
           }
@@ -190,7 +199,8 @@ export default [
     name: 'Appendix',
     meta: {
       icon: 'md-menu',
-      title: '开发附录'
+      title: '开发附录',
+      access: ['AUTH_SUPER_ADMIN']
     },
     component: Blank,
     children: [

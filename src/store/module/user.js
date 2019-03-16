@@ -117,7 +117,7 @@ export default {
             commit('setAvator', data.header)
             commit('setUserName', data.username)
             commit('setUserId', data.id)
-            commit('setAccess', [])
+            commit('setAccess', data.authorities)
             commit('setHasGetInfo', true)
             resolve(data)
           }).catch(err => {

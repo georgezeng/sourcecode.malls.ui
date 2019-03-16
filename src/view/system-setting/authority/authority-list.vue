@@ -32,6 +32,7 @@
             :page-size="queryInfo.page.size"
             :current="queryInfo.page.num"
             @on-change="changePage"
+            @on-page-size-change="changePageSize"
             show-elevator show-sizer class="float-right"/>
       <div class="clearfix"></div>
     </Card>
@@ -50,7 +51,7 @@
         queryInfo: {
           page: {
             num: 1,
-            size: 20,
+            size: 10,
             property: 'name',
             order: 'ASC'
           }
@@ -125,8 +126,9 @@
         this.queryInfo.page.order = order.toUpperCase()
         this.load()
       },
-      changePage() {
+      changePage(pageNum) {
         this.loading = true
+        this.queryInfo.page.num = pageNum ? pageNum : this.queryInfo.page.num
         API.list(this.queryInfo).then(res => {
           this.list = res.list
           this.total = res.total
@@ -134,6 +136,10 @@
         }).catch(ex => {
           this.loading = false
         })
+      },
+      changePageSize(pageSize) {
+        this.queryInfo.page.size = pageSize ? pageSize : this.queryInfo.page.size
+        this.changePage(1)
       },
       bulkDelete() {
         this.deleteData(this.selection)

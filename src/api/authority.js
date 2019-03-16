@@ -8,7 +8,7 @@ export default {
     return axios.post('/authority/delete', { ids })
   },
   load: (id) => {
-    return axios.get('/authority/one/' + id)
+    return axios.get('/authority/one/p/' + id)
   },
   save: (obj) => {
     return axios.post('/authority/save', obj)

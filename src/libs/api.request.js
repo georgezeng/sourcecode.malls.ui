@@ -31,6 +31,7 @@ ajax.interceptors.response.use(function (response) {
 function handleError (ex) {
   let code = Number(ex && ex.response && ex.response.status)
   switch (code) {
+    case 403:
     case 401:
       router.push({
         name: 'error_401'

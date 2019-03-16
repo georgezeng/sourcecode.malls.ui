@@ -60,6 +60,9 @@
           ],
           name: [
             {required: true, message: '名称不能为空', trigger: 'blur'}
+          ],
+          link: [
+            {required: true, message: '链接不能为空', trigger: 'blur'}
           ]
         }
       }
@@ -98,12 +101,12 @@
         return !this.readOnly ? '编辑' : '新增'
       },
       readOnly() {
-        return this.form.id != null && this.form.id !== '0'
+        return this.form.id != null && this.form.id != 0
       }
     },
     mounted: function () {
       this.form.id = this.$router.currentRoute.params.id
-      this.form.id = this.form.id !== '0' ? this.form.id : null;
+      this.form.id = this.form.id != 0 ? this.form.id : null;
       this.load()
     }
   }

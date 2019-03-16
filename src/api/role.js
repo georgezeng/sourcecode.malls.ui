@@ -8,7 +8,7 @@ export default {
     return axios.post('/role/delete', { ids })
   },
   load: (id) => {
-    return axios.get('/role/one/' + id)
+    return axios.get('/role/one/p/' + id)
   },
   save: (obj) => {
     return axios.post('/role/save', obj)

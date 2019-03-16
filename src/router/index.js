@@ -5,14 +5,9 @@ import store from '@/store'
 import iView from 'iview'
 import { setToken, getToken, canTurnTo, setTitle } from '@/libs/util'
 import config from '@/config'
-const { homeName } = config
 
 Vue.use(Router)
-const router = new Router({
-  routes,
-  // mode: 'history'
-  mode: 'hash'
-})
+const { homeName } = config
 const LOGIN_PAGE_NAME = 'login'
 const PAGE_404_NAME = 'error_404'
 const PAGE_401_NAME = 'error_401'
@@ -21,6 +16,12 @@ const turnTo = (to, access, next) => {
   if (canTurnTo(to.name, access, routes)) next() // 有权限，可访问
   else next({ replace: true, name: PAGE_401_NAME }) // 无权限，重定向到401页面
 }
+
+const router = new Router({
+  routes,
+  //mode: 'history'
+  mode: 'hash'
+})
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
