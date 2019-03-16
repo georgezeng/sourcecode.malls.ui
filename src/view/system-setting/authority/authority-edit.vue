@@ -98,7 +98,7 @@
     },
     computed: {
       action() {
-        return !this.readOnly ? '编辑' : '新增'
+        return this.readOnly ? '编辑' : '新增'
       },
       readOnly() {
         return this.form.id != null && this.form.id != 0

@@ -67,8 +67,7 @@ export default [
         component: Blank,
         meta: {
           icon: 'md-funnel',
-          title: '用户管理',
-          access: ['AUTH_SUPER_ADMIN', 'AUTH_USER_LIST_PAGE']
+          title: '用户管理'
         },
         children: [
           {
