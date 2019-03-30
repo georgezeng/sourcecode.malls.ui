@@ -51,7 +51,7 @@ export default {
   data () {
     return {
       form: {
-        userName: 'admin',
+        userName: '',
         password: ''
       }
     }

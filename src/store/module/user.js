@@ -10,6 +10,18 @@ import {
   getUnreadCount
 } from '@/api/user'
 import { setToken, getToken } from '@/libs/util'
+import config from '@/config/index'
+
+let bucketDomain = null
+switch (process.env.NODE_ENV) {
+  case 'development': {
+    bucketDomain = config.publicBucketDomain.dev
+  }
+    break;
+  default: {
+    bucketDomain = config.publicBucketDomain.pro
+  }
+}
 
 export default {
   state: {
@@ -28,7 +40,7 @@ export default {
   },
   mutations: {
     setAvator (state, avatorPath) {
-      state.avatorImgPath = avatorPath
+      state.avatorImgPath = bucketDomain + avatorPath
     },
     setUserId (state, id) {
       state.userId = id

@@ -10,16 +10,26 @@
       </div>
       <Form ref="form" :model="form" :rules="rules" :label-width="80">
         <FormItem label="用户名" prop="username">
-          <Input v-model="form.username" :readonly="readOnly"></Input>
+          <Input v-model="form.username" :readonly="isEdit"></Input>
         </FormItem>
         <FormItem label="邮箱" prop="email">
           <Input v-model="form.email" placeholder="输入邮箱"></Input>
         </FormItem>
-        <FormItem label="密码" prop="password" :class="{hidden: readOnly}">
-          <Input v-model="form.password" :readonly="readOnly"></Input>
+        <FormItem label="密码" prop="password" :class="{hidden: isEdit}">
+          <Input v-model="form.password" :readonly="isEdit"></Input>
         </FormItem>
         <FormItem label="手机号" prop="mobile">
           <Input v-model="form.mobile" placeholder="输入手机号"></Input>
+        </FormItem>
+        <FormItem label="头像" prop="header">
+          <Upload class="float-left margin-right-10" :action="uploadUrl" with-credentials :format="uploadFormat"
+                  :show-upload-list="false" :max-size="3000"
+                  :on-exceeded-size="showExceededError" :on-format-error="showFormatError"
+                  :on-success="showUploadSuccess">
+            <Button icon="ios-cloud-upload-outline">上传头像</Button>
+          </Upload>
+          <img class="float-left margin-right-10" :src="imgPreviewUrl" width="32" height="32"/>
+          <Alert class="float-left" :class="{hidden: !uploadErrorText}" type="error">{{uploadErrorText}}</Alert>
         </FormItem>
         <FormItem label="状态">
           <Select v-model="form.enabled" style="width:200px">
@@ -40,6 +50,21 @@
   import RoleAPI from '@/api/role'
   import MultiSelectors from '@/components/multi-selectors/multi-selectors'
   import {Message} from 'iview'
+  import config from '@/config/index'
+
+  let baseUrl = null
+  let bucketDomain = null
+  switch (process.env.NODE_ENV) {
+    case 'development': {
+      baseUrl = config.baseUrl.dev
+      bucketDomain = config.publicBucketDomain.dev
+    }
+      break;
+    default: {
+      baseUrl = config.baseUrl.pro
+      bucketDomain = config.publicBucketDomain.pro
+    }
+  }
 
   export default {
     name: 'UserEdit',
@@ -49,6 +74,8 @@
     data() {
       return {
         loading: false,
+        uploadFormat: ['png'],
+        uploadErrorText: '',
         form: {
           id: null,
           username: '',
@@ -56,6 +83,7 @@
           password: '',
           mobile: '',
           enabled: 'true',
+          header: 'common/header.png',
           roles: []
         },
         statusList: [
@@ -79,7 +107,7 @@
             {max: 50, message: '邮箱不能多于50位', trigger: 'change'}
           ],
           password: [
-            {required: !this.readOnly, message: '密码不能为空', trigger: 'change'},
+            {required: !this.isEdit, message: '密码不能为空', trigger: 'change'},
             {
               type: 'string',
               pattern: /^(?=.*[0-9].*)(?=.*[A-Za-z].*).{8,}$/,
@@ -190,14 +218,37 @@
             })
           }
         }
+      },
+      showFormatError() {
+        this.uploadErrorText = '文件类型只能是png'
+      },
+      showUploadSuccess(response, file, fileList) {
+        this.uploadErrorText = ''
+        this.imgPreviewUrl = response.data
+        Message.success('上传成功')
+
+      },
+      showExceededError() {
+        this.uploadErrorText = '文件大小必须在3000KB以内'
       }
     },
     computed: {
       action() {
-        return this.readOnly ? '编辑' : '新增'
+        return this.isEdit ? '编辑' : '新增'
       },
-      readOnly() {
+      isEdit() {
         return this.form.id != null && this.form.id != 0
+      },
+      uploadUrl() {
+        return baseUrl + '/user/upload/header/p/' + (this.isEdit ? this.form.id : '0')
+      },
+      imgPreviewUrl: {
+        get() {
+          return bucketDomain + this.form.header
+        },
+        set(url) {
+          this.form.header = url
+        }
       }
     },
     mounted: function () {

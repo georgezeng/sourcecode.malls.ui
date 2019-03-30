@@ -27,6 +27,11 @@ export default {
   /**
    * @description 需要加载的插件
    */
+  publicBucketDomain: {
+    dev: 'https://malls-admin-public-local.oss-cn-shenzhen.aliyuncs.com/',
+    uat: 'https://malls-admin-public-uat.oss-cn-shenzhen.aliyuncs.com/',
+    pro: 'https://malls-admin-public-live.oss-cn-shenzhen.aliyuncs.com/'
+  },
   plugin: {
     'error-store': {
       showInHeader: true, // 设为false后不会在顶部显示错误日志徽标
