@@ -80,13 +80,17 @@
         }
       },
       save() {
-        this.loading = true
-        API.save(this.form).then(res => {
-          this.loading = false
-          Message.success('保存成功')
-          this.back()
-        }).catch(ex => {
-          this.loading = false
+        this.$refs.form.validate().then(valid => {
+          if (valid) {
+            this.loading = true
+            API.save(this.form).then(res => {
+              this.loading = false
+              Message.success('保存成功')
+              this.back()
+            }).catch(ex => {
+              this.loading = false
+            })
+          }
         })
       },
       back() {

@@ -57,6 +57,7 @@ export default [
     path: '/SystemSetting',
     name: 'SystemSetting',
     meta: {
+      access: ['AUTH_SUPER_ADMIN', 'AUTH_USER_LIST_PAGE', 'AUTH_USER_EDIT_PAGE', 'AUTH_ROLE_LIST_PAGE']
       icon: 'md-menu',
       title: '系统设置',
       notCache: true
