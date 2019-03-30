@@ -107,7 +107,7 @@
             {max: 50, message: '邮箱不能多于50位', trigger: 'change'}
           ],
           password: [
-            {required: !this.isEdit, message: '密码不能为空', trigger: 'change'},
+            {required: true, message: '密码不能为空', trigger: 'change'},
             {
               type: 'string',
               pattern: /^(?=.*[0-9].*)(?=.*[A-Za-z].*).{8,}$/,
@@ -257,7 +257,9 @@
     },
     mounted: function () {
       this.form.id = this.$router.currentRoute.params.id
-      this.form.id = this.form.id != 0 ? this.form.id : null;
+      let isEdit = this.form.id != 0
+      this.form.id = isEdit ? this.form.id : null;
+      this.rules.password[0].required = !isEdit
       this.load()
       this.loadRoles()
     }
