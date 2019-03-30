@@ -244,7 +244,7 @@
         return this.form.id != null && this.form.id != 0
       },
       uploadUrl() {
-        return baseUrl + '/user/upload/header/p/' + (this.isEdit ? this.form.id : '0')
+        return baseUrl + '/user/upload/header/params/' + (this.isEdit ? this.form.id : '0')
       },
       imgPreviewUrl: {
         get() {

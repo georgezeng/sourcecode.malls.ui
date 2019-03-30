@@ -8,7 +8,7 @@ export default {
     return axios.post('/user/delete', { ids })
   },
   load: (id) => {
-    return axios.get('/user/one/p/' + id)
+    return axios.get('/user/one/params/' + id)
   },
   save: (obj) => {
     return axios.post('/user/save', obj)
