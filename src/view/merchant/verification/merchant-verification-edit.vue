@@ -1,13 +1,39 @@
+<style>
+  .unpass {
+    background-image: url('../../../assets/images/img_stamp_unpass.png');
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    z-index: 100;
+    background-repeat: no-repeat;
+    top: 10px;
+    left: 300px;
+  }
+  .pass {
+    background-image: url('../../../assets/images/img_stamp_pass.png');
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    z-index: 100;
+    background-repeat: no-repeat;
+    top: 10px;
+    left: 300px;
+  }
+</style>
 <template>
   <div>
     <Card>
       <p slot="title">
         商家认证审核 ({{form.statusText}})
+        <div class="unpass" :class="{hidden: isChecking || !isUnPassed}"></div>
+        <div class="pass" :class="{hidden: isChecking || isUnPassed}"></div>
       </p>
-      <div slot="extra">
+      <div slot="extra" :class="{hidden: !isChecking}">
         <Button @click="save" type="primary" class="margin-right"
-                :class="{hidden: !isChecking}" :loading="loading">保存
-        </Button>
+                 :loading="loading">保存</Button>
+        <Button @click="goList" type="success">返回</Button>
+      </div>
+      <div slot="extra" :class="{hidden: isChecking}">
         <Button @click="goList" type="success">返回</Button>
       </div>
       <Form ref="form" :model="form" :rules="rules" :label-width="80">
@@ -144,7 +170,6 @@
       isChecking() {
         let isChecking = this.status === 'Checking'
         // this.rules.statusType[0].required = isChecking
-
         return isChecking
       },
       isUnPassed() {
