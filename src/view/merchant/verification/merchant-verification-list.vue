@@ -97,8 +97,6 @@
     },
     methods: {
       load() {
-        this.disableBtnDisabled = true
-        this.enableBtnDisabled = true
         this.queryInfo.page.num = 1
         this.changePage()
       },
@@ -115,6 +113,9 @@
           if (res.list) {
             this.list = res.list
             this.total = res.total
+          } else {
+            this.list = []
+            this.total = 0
           }
           this.loading = false
         }).catch(ex => {

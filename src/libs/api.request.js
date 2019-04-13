@@ -19,12 +19,12 @@ const ajax = axios.create({
 ajax.interceptors.response.use(function (response) {
   if (response.data) {
     if (response.data.code !== 0) {
-      if (response.request && response.request.responseURL && response.request.responseURL.indexOf('login') > -1) {
+      if (!response.data.msgs && response.request && response.request.responseURL && response.request.responseURL.indexOf('login') > -1) {
         setToken('')
         router.push({
           name: 'Login'
         })
-        return
+        return response.data
       }
       alertError(response.data)
       return Promise.reject(response.data)

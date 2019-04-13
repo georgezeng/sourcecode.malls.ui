@@ -47,7 +47,7 @@ export default {
     },
     setTagNavList (state, list) {
       let tagList = []
-      if (list) {
+      if (list && list.length > 0) {
         tagList = [...list]
       } else tagList = getTagNavListFromLocalstorage() || []
       if (tagList[0] && tagList[0].name !== homeName) tagList.shift()
