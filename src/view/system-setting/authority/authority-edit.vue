@@ -6,7 +6,7 @@
       </p>
       <div slot="extra">
         <Button @click="save" type="primary" class="margin-right" :loading="loading">保存</Button>
-        <Button @click="back" type="success">返回</Button>
+        <Button @click="goList" type="success">返回</Button>
       </div>
       <Form ref="form" :model="form" :rules="rules" :label-width="80">
         <FormItem label="编码" prop="code">
@@ -37,7 +37,7 @@
   import {Message} from 'iview'
 
   export default {
-    name: 'UserEdit',
+    name: 'AuthorityEdit',
     components: {},
     data() {
       return {
@@ -86,15 +86,14 @@
             API.save(this.form).then(res => {
               this.loading = false
               Message.success('保存成功')
-              this.back()
+              this.goList()
             }).catch(ex => {
               this.loading = false
             })
           }
         })
       },
-      back() {
-        this.$store.commit('closeTag', this.$router.currentRoute)
+      goList() {
         this.$router.push({
           name: 'AuthorityList'
         })

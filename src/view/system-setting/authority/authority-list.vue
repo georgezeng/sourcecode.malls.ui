@@ -22,7 +22,7 @@
       <Input v-model="searchText" search enter-button @on-search="load"
              style="float: left; width: 200px; margin-bottom: 5px;"/>
       <Button @click="bulkDeleteModal=true" :disabled="deleteBtnDisabled" class="float-right" type="error">批量删除</Button>
-      <Button @click="toAddView" class="float-right margin-right" type="primary">新增</Button>
+      <Button @click="goAdd" class="float-right margin-right" type="primary">新增</Button>
       <div class="clearfix"></div>
       <Table class="margin-top-bottom" :loading="loading" :data="list" :columns="columns"
              @on-select-all="enableDeleteBtn"
@@ -85,7 +85,7 @@
                   },
                   on: {
                     click: () => {
-                      self.toEditView(params.row.id)
+                      self.goEdit(params.row.id)
                     }
                   }
                 }, '编辑'),
@@ -130,8 +130,10 @@
         this.loading = true
         this.queryInfo.page.num = pageNum ? pageNum : this.queryInfo.page.num
         API.list(this.queryInfo).then(res => {
-          this.list = res.list
-          this.total = res.total
+          if (res.list) {
+            this.list = res.list
+            this.total = res.total
+          }
           this.loading = false
         }).catch(ex => {
           this.loading = false
@@ -172,10 +174,11 @@
           this.selection = selection
         }
       },
-      toAddView() {
-        this.toEditView(0)
+      goAdd() {
+        this.goEdit(0)
       },
-      toEditView(id) {
+      goEdit(id) {
+        this.$store.commit('closeTag', this.$router.currentRoute)
         this.$router.push({
           name: 'AuthorityEdit',
           params: {
@@ -185,6 +188,8 @@
       }
     },
     mounted: function () {
+      let res = this.$store.state.app.tagNavList.filter(item => item.name !== 'AuthorityEdit')
+      this.$store.commit('setTagNavList', res)
       this.load()
     }
   }

@@ -1,4 +1,4 @@
-export default {
+const config = {
   /**
    * @description 配置显示在浏览器标签的title
    */
@@ -13,25 +13,14 @@ export default {
    *              用来在菜单中显示文字
    */
   useI18n: false,
-  /**
-   * @description api请求基础路径
-   */
-  baseUrl: {
-    dev: 'http://localhost:9090',
-    pro: ''
-  },
+
   /**
    * @description 默认打开的首页的路由name值，默认为home
    */
-  homeName: 'home',
+  homeName: 'Home',
   /**
    * @description 需要加载的插件
    */
-  publicBucketDomain: {
-    dev: 'https://malls-admin-public-local.oss-cn-shenzhen.aliyuncs.com/',
-    uat: 'https://malls-admin-public-uat.oss-cn-shenzhen.aliyuncs.com/',
-    pro: 'https://malls-admin-public-live.oss-cn-shenzhen.aliyuncs.com/'
-  },
   plugin: {
     'error-store': {
       showInHeader: true, // 设为false后不会在顶部显示错误日志徽标
@@ -39,3 +28,22 @@ export default {
     }
   }
 }
+
+switch (process.env.NODE_ENV) {
+  case 'development':
+    config.baseUrl = 'http://localhost:9090'
+    config.publicBucketDomain = 'https://malls-admin-public-local.oss-cn-shenzhen.aliyuncs.com/'
+    break
+
+  case 'uat':
+    config.baseUrl = 'http://localhost:9090'
+    config.publicBucketDomain = 'https://malls-admin-public-uat.oss-cn-shenzhen.aliyuncs.com/'
+    break
+
+  default:
+    config.baseUrl = ''
+    config.publicBucketDomain = 'https://malls-admin-public-live.oss-cn-shenzhen.aliyuncs.com/'
+}
+
+export default config
+

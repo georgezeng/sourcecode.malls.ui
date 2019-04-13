@@ -3,12 +3,13 @@ import axios from 'axios'
 import config from '@/config'
 import router from '@/router'
 import { Message } from 'iview'
+import { setToken } from '@/libs/util'
 
-const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
+const LOGIN_PAGE_NAME = 'Login'
 
 // const ajax = new HttpRequest(baseUrl)
 const ajax = axios.create({
-  baseURL: baseUrl,
+  baseURL: config.baseUrl,
   headers: {
     'Access-Control-Allow-Origin': '*'
   },
@@ -18,6 +19,13 @@ const ajax = axios.create({
 ajax.interceptors.response.use(function (response) {
   if (response.data) {
     if (response.data.code !== 0) {
+      if (response.request && response.request.responseURL && response.request.responseURL.indexOf('login') > -1) {
+        setToken('')
+        router.push({
+          name: 'Login'
+        })
+        return
+      }
       alertError(response.data)
       return Promise.reject(response.data)
     }
@@ -38,8 +46,9 @@ function handleError (ex) {
       })
       return
     case 302:
+      setToken('')
       router.push({
-        name: 'login'
+        name: LOGIN_PAGE_NAME
       })
       return
   }

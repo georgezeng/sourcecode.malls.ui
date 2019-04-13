@@ -21,7 +21,7 @@ import parentView from '@/components/parent-view'
 export default [
   {
     path: '/login',
-    name: 'login',
+    name: 'Login',
     meta: {
       title: '登录',
       hideInMenu: true,
@@ -32,7 +32,7 @@ export default [
 
   {
     path: '/',
-    name: '_home',
+    // name: '_home',
     component: Main,
     meta: {
       title: '首页',
@@ -42,7 +42,7 @@ export default [
     children: [
       {
         path: '',
-        name: 'home',
+        name: 'Home',
         meta: {
           title: '首页',
           notCache: true,
@@ -54,10 +54,58 @@ export default [
   },
 
   {
+    path: '/Merchant',
+    name: 'MerchantManage',
+    meta: {
+      access: ['AUTH_SUPER_ADMIN', 'AUTH_MERCHANT_LIST_PAGE', 'AUTH_MERCHANT_VERIFICATION_LIST_PAGE'],
+      icon: 'md-menu',
+      title: '商家管理',
+      notCache: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'List',
+        name: 'MerchantList',
+        component: () => import('@/view/merchant/merchant-list.vue'),
+        meta: {
+          icon: 'md-funnel',
+          title: '商家列表',
+          access: ['AUTH_SUPER_ADMIN', 'AUTH_MERCHANT_LIST_PAGE'],
+          notCache: true
+        }
+      },
+      {
+        path: 'Verification/List',
+        name: 'MerchantVerificationList',
+        component: () => import('@/view/merchant/verification/merchant-verification-list.vue'),
+        meta: {
+          icon: 'md-funnel',
+          title: '商家认证列表',
+          access: ['AUTH_SUPER_ADMIN', 'AUTH_MERCHANT_VERIFICATION_LIST_PAGE'],
+          notCache: true
+        }
+      },
+      {
+        path: 'Verification/Edit/:id',
+        name: 'MerchantVerificationEdit',
+        component: () => import('@/view/merchant/verification/merchant-verification-edit.vue'),
+        meta: {
+          hideInMenu: true,
+          icon: 'md-funnel',
+          title: '商家认证审核',
+          access: ['AUTH_SUPER_ADMIN', 'AUTH_MERCHANT_VERIFICATION_EDIT_PAGE'],
+          notCache: true
+        }
+      },
+    ]
+  },
+
+  {
     path: '/SystemSetting',
     name: 'SystemSetting',
     meta: {
-      access: ['AUTH_SUPER_ADMIN', 'AUTH_USER_LIST_PAGE', 'AUTH_USER_EDIT_PAGE', 'AUTH_ROLE_LIST_PAGE']
+      access: ['AUTH_SUPER_ADMIN', 'AUTH_USER_LIST_PAGE', 'AUTH_AUTHORITY_LIST_PAGE', 'AUTH_ROLE_LIST_PAGE'],
       icon: 'md-menu',
       title: '系统设置',
       notCache: true

@@ -12,17 +12,6 @@ import {
 import { setToken, getToken } from '@/libs/util'
 import config from '@/config/index'
 
-let bucketDomain = null
-switch (process.env.NODE_ENV) {
-  case 'development': {
-    bucketDomain = config.publicBucketDomain.dev
-  }
-    break;
-  default: {
-    bucketDomain = config.publicBucketDomain.pro
-  }
-}
-
 export default {
   state: {
     userName: '',
@@ -40,7 +29,7 @@ export default {
   },
   mutations: {
     setAvator (state, avatorPath) {
-      state.avatorImgPath = bucketDomain + avatorPath
+      state.avatorImgPath = config.publicBucketDomain + avatorPath
     },
     setUserId (state, id) {
       state.userId = id

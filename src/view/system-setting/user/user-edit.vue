@@ -6,7 +6,7 @@
       </p>
       <div slot="extra">
         <Button @click="save" type="primary" class="margin-right" :loading="loading">保存</Button>
-        <Button @click="back" type="success">返回</Button>
+        <Button @click="goList" type="success">返回</Button>
       </div>
       <Form ref="form" :model="form" :rules="rules" :label-width="80">
         <FormItem label="用户名" prop="username">
@@ -22,14 +22,14 @@
           <Input v-model="form.mobile" placeholder="输入手机号"></Input>
         </FormItem>
         <FormItem label="头像" prop="header">
-          <Upload class="float-left margin-right-10" :action="uploadUrl" with-credentials :format="uploadFormat"
+          <Upload class="float-left margin-right-10" :action="uploadUrl" with-credentials :format="upload.format"
                   :show-upload-list="false" :max-size="3000"
                   :on-exceeded-size="showExceededError" :on-format-error="showFormatError"
                   :on-success="showUploadSuccess">
             <Button icon="ios-cloud-upload-outline">上传头像</Button>
           </Upload>
           <img class="float-left margin-right-10" :src="imgPreviewUrl" width="32" height="32"/>
-          <Alert class="float-left" :class="{hidden: !uploadErrorText}" type="error">{{uploadErrorText}}</Alert>
+          <Alert class="float-left" :class="{hidden: !upload.errorText}" type="error">{{upload.errorText}}</Alert>
         </FormItem>
         <FormItem label="状态">
           <Select v-model="form.enabled" style="width:200px">
@@ -51,20 +51,7 @@
   import MultiSelectors from '@/components/multi-selectors/multi-selectors'
   import {Message} from 'iview'
   import config from '@/config/index'
-
-  let baseUrl = null
-  let bucketDomain = null
-  switch (process.env.NODE_ENV) {
-    case 'development': {
-      baseUrl = config.baseUrl.dev
-      bucketDomain = config.publicBucketDomain.dev
-    }
-      break;
-    default: {
-      baseUrl = config.baseUrl.pro
-      bucketDomain = config.publicBucketDomain.pro
-    }
-  }
+  import avatar from '@/assets/images/avatar.png'
 
   export default {
     name: 'UserEdit',
@@ -74,8 +61,10 @@
     data() {
       return {
         loading: false,
-        uploadFormat: ['png'],
-        uploadErrorText: '',
+        upload: {
+          format: ['png'],
+          errorText: ''
+        },
         form: {
           id: null,
           username: '',
@@ -83,7 +72,7 @@
           password: '',
           mobile: '',
           enabled: 'true',
-          header: 'common/header.png',
+          header: null,
           roles: []
         },
         statusList: [
@@ -182,15 +171,14 @@
             API.save(this.form).then(res => {
               this.loading = false
               Message.success('保存成功')
-              this.back()
+              this.goList()
             }).catch(ex => {
               this.loading = false
             })
           }
         })
       },
-      back() {
-        this.$store.commit('closeTag', this.$router.currentRoute)
+      goList() {
         this.$router.push({
           name: 'UserList'
         })
@@ -224,16 +212,19 @@
         }
       },
       showFormatError() {
-        this.uploadErrorText = '文件类型只能是png'
+        let formats = ''
+        for(let i in this.upload.format) {
+          formats += this.upload.format[i]
+        }
+        this.upload.errorText = '文件类型只能是' + this.upload.format[0]
       },
       showUploadSuccess(response, file, fileList) {
-        this.uploadErrorText = ''
+        this.upload.errorText = ''
         this.imgPreviewUrl = response.data
         Message.success('上传成功')
-
       },
       showExceededError() {
-        this.uploadErrorText = '文件大小必须在3000KB以内'
+        this.upload.errorText = '文件大小必须在3000KB以内'
       }
     },
     computed: {
@@ -244,11 +235,11 @@
         return this.form.id != null && this.form.id != 0
       },
       uploadUrl() {
-        return baseUrl + '/user/upload/header/params/' + (this.isEdit ? this.form.id : '0')
+        return config.baseUrl + '/user/upload/header/params/' + (this.isEdit ? this.form.id : '0')
       },
       imgPreviewUrl: {
         get() {
-          return bucketDomain + this.form.header
+          return this.form.header != null ? config.publicBucketDomain + this.form.header : avatar
         },
         set(url) {
           this.form.header = url

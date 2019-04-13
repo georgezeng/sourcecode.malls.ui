@@ -8,7 +8,8 @@ import config from '@/config'
 
 Vue.use(Router)
 const { homeName } = config
-const LOGIN_PAGE_NAME = 'login'
+const LOGIN_PAGE_NAME = 'Login'
+const accessPages = [LOGIN_PAGE_NAME, 'Register', 'ForgetPassword']
 const PAGE_404_NAME = 'error_404'
 const PAGE_401_NAME = 'error_401'
 
@@ -19,21 +20,30 @@ const turnTo = (to, access, next) => {
 
 const router = new Router({
   routes,
-  //mode: 'history'
+  // mode: 'history'
   mode: 'hash'
 })
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   const token = getToken()
-  if (!token && to.name !== LOGIN_PAGE_NAME) {
-    // 未登录且要跳转的页面不是登录页
-    next({
-      name: LOGIN_PAGE_NAME // 跳转到登录页
-    })
-  } else if (!token && to.name === LOGIN_PAGE_NAME) {
-    // 未登陆且要跳转的页面是登录页
-    next() // 跳转
+  if (!token) {
+    let found = false
+    for (let i in accessPages) {
+      let name = accessPages[i]
+      if (name === to.name) {
+        found = true
+        break
+      }
+    }
+    if (found) {
+      next()
+    } else {
+      // 未登录且要跳转的页面不是登录页
+      next({
+        name: LOGIN_PAGE_NAME // 跳转到登录页
+      })
+    }
   } else if (token && to.name === LOGIN_PAGE_NAME) {
     // 已登录且要跳转的页面是登录页
     next({
@@ -43,7 +53,8 @@ router.beforeEach((to, from, next) => {
     if (to.name === PAGE_401_NAME) {
       next()
       return
-    } if (to.name === PAGE_404_NAME) {
+    }
+    if (to.name === PAGE_404_NAME) {
       next()
       return
     }
@@ -56,7 +67,7 @@ router.beforeEach((to, from, next) => {
       }).catch(ex => {
         setToken('')
         next({
-          name: 'login'
+          name: LOGIN_PAGE_NAME
         })
       })
     }
