@@ -3,7 +3,10 @@ import axios from 'axios'
 import config from '@/config'
 import router from '@/router'
 import { Message } from 'iview'
-import { setToken } from '@/libs/util'
+import {
+  setTagNavListInLocalstorage,
+  setToken
+} from '@/libs/util'
 
 const LOGIN_PAGE_NAME = 'Login'
 
@@ -20,6 +23,7 @@ ajax.interceptors.response.use(function (response) {
   if (response.data) {
     if (response.data.code !== 0) {
       if (!response.data.msgs && response.request && response.request.responseURL && response.request.responseURL.indexOf('login') > -1) {
+        setTagNavListInLocalstorage([])
         setToken('')
         router.push({
           name: 'Login'
@@ -46,6 +50,7 @@ function handleError (ex) {
       })
       return
     case 302:
+      setTagNavListInLocalstorage([])
       setToken('')
       router.push({
         name: LOGIN_PAGE_NAME

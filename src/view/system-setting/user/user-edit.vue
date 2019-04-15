@@ -15,8 +15,11 @@
         <FormItem label="邮箱" prop="email">
           <Input v-model="form.email" placeholder="输入邮箱"></Input>
         </FormItem>
-        <FormItem label="密码" prop="password" :class="{hidden: isEdit}">
-          <Input v-model="form.password" :readonly="isEdit"></Input>
+        <FormItem label="密码" prop="password">
+          <Input type="password" v-model="form.password" @on-change="setConfirmPasswordStatus"></Input>
+        </FormItem>
+        <FormItem label="确认密码" prop="confirmPassword">
+          <Input type="password" v-model="form.confirmPassword"></Input>
         </FormItem>
         <FormItem label="手机号" prop="mobile">
           <Input v-model="form.mobile" placeholder="输入手机号"></Input>
@@ -59,6 +62,14 @@
       MultiSelectors
     },
     data() {
+      let isEdit = this.$router.currentRoute.params.id != 0
+      const confirmPwdCheck = (rule, value, callback) => {
+        if (this.form.password !== '' && this.form.password !== value) {
+          callback(new Error('确认密码与密码不相同'));
+        } else {
+          callback();
+        }
+      }
       return {
         loading: false,
         upload: {
@@ -96,7 +107,7 @@
             {max: 50, message: '邮箱不能多于50位', trigger: 'change'}
           ],
           password: [
-            {required: true, message: '密码不能为空', trigger: 'change'},
+            {required: !isEdit, message: '密码不能为空', trigger: 'change'},
             {
               type: 'string',
               pattern: /^(?=.*[0-9].*)(?=.*[A-Za-z].*).{8,}$/,
@@ -104,6 +115,10 @@
               trigger: 'change'
             },
             {max: 20, message: '密码不能多于20位', trigger: 'change'}
+          ],
+          confirmPassword: [
+            {required: !isEdit, message: '确认密码不能为空', trigger: 'change'},
+            {required: !isEdit, validator: confirmPwdCheck, trigger: 'change'}
           ],
           mobile: [
             {type: 'string', pattern: /^\d{11}$/, message: '手机号必须是11位数字', trigger: 'change'}
@@ -225,6 +240,11 @@
       },
       showExceededError() {
         this.upload.errorText = '文件大小必须在3000KB以内'
+      },
+      setConfirmPasswordStatus() {
+        let required = this.form.password !== ''
+        this.rules.confirmPassword[0].required = required
+        this.rules.confirmPassword[1].required = required
       }
     },
     computed: {

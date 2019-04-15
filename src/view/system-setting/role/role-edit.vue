@@ -10,7 +10,7 @@
       </div>
       <Form ref="form" :model="form" :rules="rules" :label-width="80">
         <FormItem label="编码" prop="code">
-          <Input v-model="form.code" :readonly="codeReadonly"></Input>
+          <Input v-model="form.code" :readonly="readOnly"></Input>
         </FormItem>
         <FormItem label="名称" prop="name">
           <Input v-model="form.name" placeholder="输入角色名"></Input>
