@@ -9,6 +9,7 @@
         <DropdownItem name="message">
           消息中心<Badge style="margin-left: 10px" :count="messageUnreadCount"></Badge>
         </DropdownItem>
+        <DropdownItem name="modifyPassword">修改密码</DropdownItem>
         <DropdownItem name="logout">退出登录</DropdownItem>
       </DropdownMenu>
     </Dropdown>
@@ -37,7 +38,7 @@ export default {
     logout () {
       this.handleLogOut().then(() => {
         this.$router.push({
-          name: 'login'
+          name: 'Login'
         })
       })
     },
