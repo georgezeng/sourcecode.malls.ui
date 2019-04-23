@@ -3,6 +3,8 @@
     <Upload class="float-left margin-right-10" :action="uploadUrl" with-credentials :format="format"
             :show-upload-list="false" :max-size="size"
             :on-exceeded-size="showExceededError" :on-format-error="showFormatError"
+            :on-progress="showUploadProgress"
+            :on-error="showUploadError"
             :on-success="showUploadSuccess">
       <Button icon="ios-cloud-upload-outline">{{btnText}}</Button>
     </Upload>
@@ -43,14 +45,22 @@
         previewHeight,
         originalWidth,
         originalHeight,
-        errorText: null
+        errorText: null,
+        loading: false
       }
     },
     methods: {
+      showUploadError() {
+        this.loading = false
+      },
+      showUploadProgress() {
+        this.loading = true
+      },
       showFormatError() {
         this.errorText = '文件类型只能是' + this.format.join(',')
       },
       showUploadSuccess(response, file, fileList) {
+        this.loading = false
         this.previewUrl = response.data
         this.errorText = ''
         Message.success('上传成功')

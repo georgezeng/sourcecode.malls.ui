@@ -84,7 +84,7 @@ export default [
         component: () => import('@/view/merchant/verification/list.vue'),
         meta: {
           icon: 'md-funnel',
-          title: '实名认证列表',
+          title: '实名认证',
           access: ['AUTH_SUPER_ADMIN', 'AUTH_MERCHANT_VERIFICATION_LIST_PAGE'],
           notCache: true
         }
@@ -107,7 +107,7 @@ export default [
         component: () => import('@/view/merchant/shop/application/list.vue'),
         meta: {
           icon: 'md-funnel',
-          title: '店铺申请列表',
+          title: '店铺申请',
           access: ['AUTH_SUPER_ADMIN', 'AUTH_MERCHANT_SHOP_APPLICATION_LIST_PAGE'],
           notCache: true
         }

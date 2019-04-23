@@ -10,7 +10,7 @@ export default {
   save: (obj) => {
     return axios.post('/merchant/shop/application/save', obj)
   },
-  deployed: (id) => {
-    return axios.get('/merchant/shop/application/deployed/params/' + id)
+  deploy: (obj) => {
+    return axios.post('/merchant/shop/application/deploy', obj)
   }
 }
