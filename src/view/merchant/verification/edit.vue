@@ -9,6 +9,7 @@
     top: 10px;
     left: 300px;
   }
+
   .pass {
     background-image: url('../../../assets/images/img_stamp_pass.png');
     width: 100px;
@@ -24,13 +25,14 @@
   <div>
     <Card>
       <p slot="title">
-        商家认证审核 ({{form.statusText}})
+        实名认证审核 ({{form.statusText}})
         <div class="unpass" :class="{hidden: isChecking || !isUnPassed}"></div>
         <div class="pass" :class="{hidden: isChecking || isUnPassed}"></div>
       </p>
       <div slot="extra" :class="{hidden: !isChecking}">
         <Button @click="save" type="primary" class="margin-right"
-                 :loading="loading">保存</Button>
+                :loading="loading">保存
+        </Button>
         <Button @click="goList" type="success">返回</Button>
       </div>
       <div slot="extra" :class="{hidden: isChecking}">
@@ -85,6 +87,7 @@
   import API from '@/api/merchant-verification'
   import {Message} from 'iview'
   import config from '@/config/index'
+  import uploadPlaceholder from '@/assets/images/upload-placeholder.png'
 
   export default {
     name: 'MerchantVerificationEdit',
@@ -179,7 +182,7 @@
         return isUnPassed
       },
       imgPreviewUrl() {
-        return this.form.photo != null ? config.publicBucketDomain + this.form.photo : uploadPlaceholder
+        return this.form.photo != null ? config.baseUrl + '/merchant/verification/photo/load/params/' + this.form.id : uploadPlaceholder
       }
     },
     mounted: function () {

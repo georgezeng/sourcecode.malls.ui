@@ -19,11 +19,11 @@
   </div>
 </template>
 <script>
-  import API from '@/api/merchant-verification'
+  import API from '@/api/merchant-shop-application'
   import {Message} from 'iview'
 
   export default {
-    name: 'MerchantVerificationList',
+    name: 'MerchantShopApplicationList',
     components: {},
     data() {
       let self = this
@@ -40,6 +40,10 @@
           {
             value: 'UnPassed',
             text: '未通过'
+          },
+          {
+            value: 'UnPay',
+            text: '未支付'
           },
           {
             value: 'all',
@@ -63,7 +67,7 @@
         loading: false,
         columns: [
           {title: '用户名', key: 'username', sortable: true},
-          {title: '商家名称', key: 'name', sortable: true},
+          {title: '店铺名称', key: 'name', sortable: true},
           {
             title: '审核状态',
             sortable: true,
@@ -88,7 +92,27 @@
                       this.goEdit(params.row.id)
                     }
                   }
-                }, '查看')
+                }, '查看'),
+
+                h('Button', {
+                  props: {
+                    type: 'success',
+                    size: 'small',
+                    disabled: params.row.deployed,
+                  },
+                  style: {
+                    marginLeft: '10px'
+                  },
+                  on: {
+                    'click': () => {
+                      if (!params.row.deployed) {
+                        this.deployed(params.row.id)
+                      } else {
+                        Message.warning('店铺已部署')
+                      }
+                    }
+                  }
+                }, '部署')
               ])
             }
           }
@@ -96,6 +120,11 @@
       }
     },
     methods: {
+      deployed(id) {
+        API.deployed(id).then(res => {
+          Message.success('部署设置成功')
+        })
+      },
       load() {
         this.queryInfo.page.num = 1
         this.changePage()
@@ -110,13 +139,8 @@
         this.loading = true
         this.queryInfo.page.num = pageNum ? pageNum : this.queryInfo.page.num
         API.list(this.queryInfo).then(res => {
-          if (res.list) {
-            this.list = res.list
-            this.total = res.total
-          } else {
-            this.list = []
-            this.total = 0
-          }
+          this.list = res.list
+          this.total = res.total
           this.loading = false
         }).catch(ex => {
           this.loading = false
@@ -129,7 +153,7 @@
       goEdit(id) {
         this.$store.commit('closeTag', this.$router.currentRoute)
         this.$router.push({
-          name: 'MerchantVerificationEdit',
+          name: 'MerchantShopApplicationEdit',
           params: {
             id
           }

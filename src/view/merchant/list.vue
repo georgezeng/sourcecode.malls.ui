@@ -150,13 +150,8 @@
         this.loading = true
         this.queryInfo.page.num = pageNum ? pageNum : this.queryInfo.page.num
         API.list(this.queryInfo).then(res => {
-          if (res.list) {
-            this.list = res.list
-            this.total = res.total
-          } else {
-            this.list = []
-            this.total = 0
-          }
+          this.list = res.list
+          this.total = res.total
           this.loading = false
         }).catch(ex => {
           this.loading = false
