@@ -100,12 +100,13 @@
         rules: {
           username: [
             {required: true, message: '用户名不能为空', trigger: 'change'},
-            {min: 3, message: '用户名不能少于3位', trigger: 'change'},
-            {max: 15, message: '用户名不能多于15位', trigger: 'change'}
+            {min: 5, message: '用户名不能少于5位', trigger: 'change'},
+            {max: 50, message: '用户名不能多于50位', trigger: 'change'}
           ],
           email: [
             {required: true, message: '邮箱不能为空', trigger: 'change'},
             {type: 'email', message: '邮箱格式不正确', trigger: 'change'},
+            {min: 5, message: '邮箱不能少于5位', trigger: 'change'},
             {max: 50, message: '邮箱不能多于50位', trigger: 'change'}
           ],
           password: [

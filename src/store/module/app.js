@@ -27,7 +27,7 @@ const closePage = (state, route) => {
 
 export default {
   state: {
-    queryInfo: null,
+    queryInfo: {},
     breadCrumbList: [],
     tagNavList: [],
     homeRoute: {},
@@ -40,8 +40,8 @@ export default {
     errorCount: state => state.errorList.length
   },
   mutations: {
-    setQueryInfo(state, queryInfo) {
-      state.queryInfo = queryInfo
+    setQueryInfo(state, { queryInfo, routeName }) {
+      state.queryInfo[routeName] = queryInfo
     },
     setBreadCrumb (state, route) {
       state.breadCrumbList = getBreadCrumbList(route, state.homeRoute)

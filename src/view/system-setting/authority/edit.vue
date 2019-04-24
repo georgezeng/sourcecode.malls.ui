@@ -56,13 +56,22 @@
         ],
         rules: {
           code: [
-            {required: true, message: '编码不能为空', trigger: 'blur'}
+            {required: true, message: '编码不能为空', trigger: 'blur'},
+            {min: 5, message: '编码不能少于5位', trigger: 'change'},
+            {max: 50, message: '编码不能多于50位', trigger: 'change'}
           ],
           name: [
-            {required: true, message: '名称不能为空', trigger: 'blur'}
+            {required: true, message: '名称不能为空', trigger: 'blur'},
+            {min: 2, message: '名称不能少于2位', trigger: 'change'},
+            {max: 50, message: '名称不能多于50位', trigger: 'change'}
           ],
           link: [
-            {required: true, message: '链接不能为空', trigger: 'blur'}
+            {required: true, message: '链接不能为空', trigger: 'blur'},
+            {min: 10, message: '链接不能少于10位', trigger: 'change'},
+            {max: 255, message: '链接不能多于255位', trigger: 'change'}
+          ],
+          description: [
+            {max: 255, message: '描述不能多于255位', trigger: 'change'}
           ]
         }
       }

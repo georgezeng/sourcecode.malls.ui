@@ -206,7 +206,7 @@
         this.goEdit(0)
       },
       goEdit(id) {
-        this.$store.commit('setQueryInfo', this.queryInfo)
+        this.$store.commit('setQueryInfo', { queryInfo: this.queryInfo, routeName: this.$router.currentRoute.name })
         this.$store.commit('closeTag', this.$router.currentRoute)
         this.$router.push({
           name: 'UserEdit',
@@ -237,9 +237,10 @@
       this.load()
     },
     updated: function() {
-      let queryInfo = this.$store.state.app.queryInfo
+      let routeName = this.$router.currentRoute.name
+      let queryInfo = this.$store.state.app.queryInfo[routeName]
       if (queryInfo) {
-        this.$store.commit('setQueryInfo', null)
+        this.$store.commit('setQueryInfo', { queryInfo: null, routeName })
         this.queryInfo = queryInfo
         this.changePage()
       }
