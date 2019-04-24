@@ -137,8 +137,7 @@
       load() {
         this.disableBtnDisabled = true
         this.enableBtnDisabled = true
-        this.queryInfo.page.num = 1
-        this.changePage()
+        this.changePage(1)
       },
       sortChange({key, order}) {
         if (!order) order = 'ASC'

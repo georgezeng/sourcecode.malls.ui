@@ -97,8 +97,7 @@
     },
     methods: {
       load() {
-        this.queryInfo.page.num = 1
-        this.changePage()
+        this.changePage(1)
       },
       sortChange({key, order}) {
         if (!order) order = 'ASC'
@@ -122,11 +121,13 @@
         this.changePage(1)
       },
       goEdit(id) {
+        this.$store.commit('setQueryInfo', this.queryInfo)
         this.$store.commit('closeTag', this.$router.currentRoute)
         this.$router.push({
           name: 'MerchantVerificationEdit',
           params: {
-            id
+            id,
+            queryInfo: this.queryInfo
           }
         })
       },
@@ -135,6 +136,14 @@
       let res = this.$store.state.app.tagNavList.filter(item => item.name !== 'MerchantVerificationEdit')
       this.$store.commit('setTagNavList', res)
       this.load()
+    },
+    updated: function() {
+      let queryInfo = this.$store.state.app.queryInfo
+      if (queryInfo) {
+        this.$store.commit('setQueryInfo', null)
+        this.queryInfo = queryInfo
+        this.changePage()
+      }
     }
   }
 </script>

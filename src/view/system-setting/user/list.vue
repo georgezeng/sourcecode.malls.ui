@@ -19,7 +19,7 @@
     </Modal>
 
     <Card>
-      <Input v-model="searchText" search enter-button @on-search="load"
+      <Input v-model="queryInfo.data" search enter-button @on-search="load"
              style="float: left; width: 200px; margin-bottom: 5px;"/>
       <Button @click="bulkDeleteModal=true" :disabled="deleteBtnDisabled" class="float-right" type="error">批量删除</Button>
       <Button @click="goAdd" class="float-right margin-right" type="primary">新增</Button>
@@ -49,6 +49,7 @@
       let self = this
       return {
         queryInfo: {
+          data: '',
           page: {
             num: 1,
             size: 10,
@@ -56,7 +57,6 @@
             order: 'ASC'
           }
         },
-        searchText: '',
         total: 0,
         list: [],
         selection: [],
@@ -143,9 +143,7 @@
     },
     methods: {
       load() {
-        this.queryInfo.data = this.searchText
-        this.queryInfo.page.num = 1
-        this.changePage()
+        this.changePage(1)
       },
       sortChange({key, order}) {
         if (!order) order = 'ASC'
@@ -157,8 +155,13 @@
         this.loading = true
         this.queryInfo.page.num = pageNum ? pageNum : this.queryInfo.page.num
         API.list(this.queryInfo).then(res => {
-          this.list = res.list
-          this.total = res.total
+          if (res.list) {
+            this.list = res.list
+            this.total = res.total
+          } else {
+            this.list = []
+            this.total = 0
+          }
           this.loading = false
         }).catch(ex => {
           this.loading = false
@@ -203,6 +206,7 @@
         this.goEdit(0)
       },
       goEdit(id) {
+        this.$store.commit('setQueryInfo', this.queryInfo)
         this.$store.commit('closeTag', this.$router.currentRoute)
         this.$router.push({
           name: 'UserEdit',
@@ -231,6 +235,14 @@
       let res = this.$store.state.app.tagNavList.filter(item => item.name !== 'UserEdit')
       this.$store.commit('setTagNavList', res)
       this.load()
+    },
+    updated: function() {
+      let queryInfo = this.$store.state.app.queryInfo
+      if (queryInfo) {
+        this.$store.commit('setQueryInfo', null)
+        this.queryInfo = queryInfo
+        this.changePage()
+      }
     }
   }
 </script>
