@@ -162,19 +162,14 @@
                   props: {
                     type: 'success',
                     size: 'small',
-                    disabled: params.row.deployed,
                   },
                   style: {
                     marginLeft: '10px'
                   },
                   on: {
                     'click': () => {
-                      if (!params.row.deployed) {
-                        this.deployModal.item = params.row
-                        this.deployModal.open = true
-                      } else {
-                        Message.warning('店铺已部署')
-                      }
+                      this.deployModal.item = params.row
+                      this.deployModal.open = true
                     }
                   }
                 }, '部署')
@@ -272,7 +267,6 @@
         API.deploy(data).then(res => {
           this.loading = false
           Message.success('部署成功')
-          this.deployModal.item.deployed = true
           this.closeModal()
         }).catch(ex => {
           this.loading = false
