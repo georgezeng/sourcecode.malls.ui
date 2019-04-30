@@ -17,10 +17,11 @@
             :on-progress="showUploadProgress"
             :on-error="showUploadError"
             :on-success="showUploadSuccess">
-      <Button icon="ios-cloud-upload-outline">{{btnText}}</Button>
+      <Button :style="{width: btnWidth ? btnWidth : 'auto'}" :loading="loading" icon="ios-cloud-upload-outline">
+        {{btnText}}
+      </Button>
     </Upload>
-    <Button class="removeBtn" type="error" @click="remove" icon="md-trash"
-            :style="{display: !removeable ? 'none': 'inherit'}"></Button>
+    <Button v-if="removeable" class="removeBtn" type="error" @click="remove" icon="md-trash"></Button>
     <Alert :class="{hidden: !errorText}" type="error">
       {{errorText}}
     </Alert>
@@ -45,7 +46,8 @@
       'btnText',
       'imgPrefix',
       'width',
-      'height'
+      'height',
+      'btnWidth'
     ],
     data() {
       let format = this.formats ? this.formats : ['png']
@@ -68,9 +70,11 @@
     methods: {
       showUploadError() {
         this.loading = false
+        this.errorText = '上传失败'
       },
       showUploadProgress() {
         this.loading = true
+        this.errorText = ''
       },
       showFormatError() {
         this.errorText = '文件类型只能是' + this.format.join(',')

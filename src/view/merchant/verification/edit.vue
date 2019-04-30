@@ -26,28 +26,28 @@
     <Card>
       <p slot="title">
         实名认证审核 ({{form.statusText}})
-        <div class="unpass" :class="{hidden: isChecking || !isUnPassed}"></div>
-        <div class="pass" :class="{hidden: isChecking || isUnPassed}"></div>
+        <div class="unpass" v-if="!(isChecking || !isUnPassed)"></div>
+        <div class="pass" v-if="!(isChecking || isUnPassed)"></div>
       </p>
-      <div slot="extra" :class="{hidden: !isChecking}">
+      <div slot="extra" v-if="isChecking">
         <Button @click="save" type="primary" class="margin-right"
                 :loading="loading">保存
         </Button>
         <Button @click="goList" type="success">返回</Button>
       </div>
-      <div slot="extra" :class="{hidden: isChecking}">
+      <div slot="extra" v-else>
         <Button @click="goList" type="success">返回</Button>
       </div>
       <Form ref="form" :model="form" :rules="rules" :label-width="80">
         <FormItem label="审核状态" :class="{hidden: isChecking}" prop="statusText">
           <Input :value="form.statusText" readonly></Input>
         </FormItem>
-        <FormItem label="审核状态" :class="{hidden: !isChecking}" prop="statusType">
+        <FormItem label="审核状态" v-if="isChecking" prop="statusType">
           <Select v-model="form.status" style="width:200px">
             <Option v-for="item in statusList" :value="item.value" :key="item.value">{{ item.text }}</Option>
           </Select>
         </FormItem>
-        <FormItem label="失败原因" :class="{hidden: !isUnPassed}" prop="reason">
+        <FormItem label="失败原因" v-if="isUnPassed" prop="reason">
           <Input v-model="form.reason" :readonly="!isChecking && isUnPassed" type="textarea"
                  :autosize="{minRows: 2, maxRows: 5}"></Input>
         </FormItem>

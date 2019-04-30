@@ -1,65 +1,58 @@
 <template>
-  <div>
-    <Card>
-      <Input v-model="queryInfo.data.searchText" class="margin-right" search enter-button @on-search="load"
-             style="float: left; width: 200px; margin-bottom: 5px;"/>
-      <Select @on-change="load" style="width: 100px" v-model="queryInfo.data.statusText">
-        <Option v-for="item in statusList" :value="item.value" :key="item.value">{{item.text}}</Option>
-      </Select>
-      <Table class="margin-top-bottom" :loading="loading" :data="list" :columns="columns"
-             @on-sort-change="sortChange"/>
-      <Page :total="total"
-            :page-size="queryInfo.page.size"
-            :current="queryInfo.page.num"
-            @on-change="changePage"
-            @on-page-size-change="changePageSize"
-            show-elevator show-sizer class="float-right"/>
-      <div class="clearfix"></div>
-    </Card>
-  </div>
+  <CommonTable
+    :statusList="statusList"
+    :useStatus="true"
+    :disableStatusBtns="true"
+    :disableAddBtn="true"
+    :disableDelete="true"
+    :columns="columns"
+    :loading="loading"
+    initSortProperty="updateTime"
+    initSortOrder="DESC"
+    editPageName="MerchantVerificationEdit"
+    :filteredPageNames="['MerchantVerificationEdit']"
+    :listHandler="listHandler"
+    :queryData="data"
+    @setLoading="setLoading"
+    @setGoEdit="setGoEdit"
+    @setQueryData="setQueryData"
+  >
+  </CommonTable>
 </template>
 <script>
   import API from '@/api/merchant-verification'
   import {Message} from 'iview'
+  import CommonTable from '@/components/tables/common-table'
 
   export default {
     name: 'MerchantVerificationList',
-    components: {},
+    components: {
+      CommonTable
+    },
     data() {
-      let self = this
       return {
         statusList: [
           {
             value: 'Checking',
-            text: '未审核'
+            label: '未审核'
           },
           {
             value: 'Passed',
-            text: '已通过'
+            label: '已通过'
           },
           {
             value: 'UnPassed',
-            text: '未通过'
+            label: '未通过'
           },
           {
             value: 'all',
-            text: '全部'
+            label: '全部'
           }
         ],
-        queryInfo: {
-          data: {
-            statusText: 'Checking',
-            searchText: ''
-          },
-          page: {
-            num: 1,
-            size: 10,
-            property: 'updateTime',
-            order: 'DESC'
-          }
+        data: {
+          statusText: 'Checking',
+          searchText: ''
         },
-        total: 0,
-        list: [],
         loading: false,
         columns: [
           {title: '用户名', key: 'username', sortable: true},
@@ -96,55 +89,16 @@
       }
     },
     methods: {
-      load() {
-        this.changePage(1)
+      listHandler: API.list,
+      setQueryData(data) {
+        this.data.searchText = data.searchText
       },
-      sortChange({key, order}) {
-        if (!order) order = 'ASC'
-        this.queryInfo.page.property = key
-        this.queryInfo.page.order = order.toUpperCase()
-        this.load()
+      setLoading(loading) {
+        this.loading = loading
       },
-      changePage(pageNum) {
-        this.loading = true
-        this.queryInfo.page.num = pageNum ? pageNum : this.queryInfo.page.num
-        API.list(this.queryInfo).then(res => {
-          this.list = res.list
-          this.total = res.total
-          this.loading = false
-        }).catch(ex => {
-          this.loading = false
-        })
-      },
-      changePageSize(pageSize) {
-        this.queryInfo.page.size = pageSize ? pageSize : this.queryInfo.page.size
-        this.changePage(1)
-      },
-      goEdit(id) {
-        this.$store.commit('setQueryInfo', { queryInfo: this.queryInfo, routeName: this.$router.currentRoute.name })
-        this.$store.commit('closeTag', this.$router.currentRoute)
-        this.$router.push({
-          name: 'MerchantVerificationEdit',
-          params: {
-            id,
-            queryInfo: this.queryInfo
-          }
-        })
-      },
-    },
-    mounted: function () {
-      let res = this.$store.state.app.tagNavList.filter(item => item.name !== 'MerchantVerificationEdit')
-      this.$store.commit('setTagNavList', res)
-      this.load()
-    },
-    updated: function() {
-      let routeName = this.$router.currentRoute.name
-      let queryInfo = this.$store.state.app.queryInfo[routeName]
-      if (queryInfo) {
-        this.$store.commit('setQueryInfo', { queryInfo: null, routeName })
-        this.queryInfo = queryInfo
-        this.changePage()
+      setGoEdit(callback) {
+        this.goEdit = callback
       }
-    }
+    },
   }
 </script>

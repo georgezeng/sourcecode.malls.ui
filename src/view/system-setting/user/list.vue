@@ -1,68 +1,53 @@
 <template>
-  <div>
-    <Modal v-model="bulkDeleteModal" width="360">
-      <p slot="header" style="color:#f60;text-align:center">
-        <Icon type="ios-information-circle"></Icon>
-        <span>操作提示</span>
-      </p>
-      <div>
-        <p>确定要删除选中的记录吗?</p>
-        <ul style="list-style: none;">
-          <li v-for="item in selection">
-            {{ item.username }}
-          </li>
-        </ul>
-      </div>
-      <div slot="footer">
-        <Button type="error" size="large" long :loading="loading" @click="bulkDelete">删除</Button>
-      </div>
-    </Modal>
-
-    <Card>
-      <Input v-model="queryInfo.data" search enter-button @on-search="load"
-             style="float: left; width: 200px; margin-bottom: 5px;"/>
-      <Button @click="bulkDeleteModal=true" :disabled="deleteBtnDisabled" class="float-right" type="error">批量删除</Button>
-      <Button @click="goAdd" class="float-right margin-right" type="primary">新增</Button>
-      <div class="clearfix"></div>
-      <Table class="margin-top-bottom" :loading="loading" :data="list" :columns="columns"
-             @on-select-all="enableDeleteBtn"
-             @on-select="enableDeleteBtn" @on-sort-change="sortChange"
-             @on-select-all-cancel="disableDeleteBtn" @on-select-cancel="disableDeleteBtn"/>
-      <Page :total="total"
-            :page-size="queryInfo.page.size"
-            :current="queryInfo.page.num"
-            @on-change="changePage"
-            @on-page-size-change="changePageSize"
-            show-elevator show-sizer class="float-right"/>
-      <div class="clearfix"></div>
-    </Card>
-  </div>
+  <CommonTable
+    enableStatusText="启用"
+    disableStatusText="禁用"
+    :statusList="statusList"
+    statusItemName="username"
+    :updateStatusHandler="updateStatusHandler"
+    @setTriggerStatus="setTriggerStatus"
+    :useStatus="true"
+    :columns="columns"
+    :loading="loading"
+    initSortProperty="username"
+    deleteItemName="username"
+    editPageName="UserEdit"
+    :filteredPageNames="['UserEdit']"
+    :listHandler="listHandler"
+    :deleteHandler="deleteHandler"
+    @setLoading="setLoading"
+    @setGoEdit="setGoEdit"
+    @setDeleteData="setDeleteData"
+  >
+  </CommonTable>
 </template>
 <script>
   import API from '@/api/users'
   import {Message} from 'iview'
+  import CommonTable from '@/components/tables/common-table'
 
   export default {
     name: 'UserList',
-    components: {},
+    components: {
+      CommonTable
+    },
     data() {
-      let self = this
       return {
-        queryInfo: {
-          data: '',
-          page: {
-            num: 1,
-            size: 10,
-            property: 'username',
-            order: 'ASC'
+        statusList: [
+          {
+            value: 'true',
+            label: '启用中'
+          },
+          {
+            value: 'false',
+            label: '禁用中'
+          },
+          {
+            value: 'all',
+            label: '全部'
           }
-        },
-        total: 0,
-        list: [],
-        selection: [],
+        ],
         loading: false,
-        bulkDeleteModal: false,
-        deleteBtnDisabled: true,
         columns: [
           {type: 'selection', width: 60, align: 'center'},
           {title: '用户名', key: 'username', sortable: true, sortType: 'asc'},
@@ -72,7 +57,7 @@
             title: '状态',
             sortable: true,
             render: (h, params) => {
-              return h('span', params.row.enabled ? '使用中' : '禁用中')
+              return h('span', params.row.enabled ? '启用中' : '禁用中')
             }
           },
           {
@@ -90,7 +75,7 @@
                   },
                   on: {
                     click: () => {
-                      self.goEdit(params.row.id)
+                      this.goEdit(params.row.id)
                     }
                   }
                 }, '编辑'),
@@ -142,108 +127,21 @@
       }
     },
     methods: {
-      load() {
-        this.changePage(1)
+      listHandler: API.list,
+      deleteHandler: API.delete,
+      updateStatusHandler: API.updateStatus,
+      setLoading(loading) {
+        this.loading = loading
       },
-      sortChange({key, order}) {
-        if (!order) order = 'ASC'
-        this.queryInfo.page.property = key
-        this.queryInfo.page.order = order.toUpperCase()
-        this.load()
+      setDeleteData(callback) {
+        this.deleteData = callback
       },
-      changePage(pageNum) {
-        this.loading = true
-        this.queryInfo.page.num = pageNum ? pageNum : this.queryInfo.page.num
-        API.list(this.queryInfo).then(res => {
-          if (res.list) {
-            this.list = res.list
-            this.total = res.total
-          } else {
-            this.list = []
-            this.total = 0
-          }
-          this.loading = false
-        }).catch(ex => {
-          this.loading = false
-        })
+      setTriggerStatus(callback) {
+        this.triggerStatus = callback
       },
-      changePageSize(pageSize) {
-        this.queryInfo.page.size = pageSize ? pageSize : this.queryInfo.page.size
-        this.changePage(1)
-      },
-      bulkDelete() {
-        this.deleteData(this.selection)
-      },
-      deleteData(selection) {
-        this.loading = true
-        let ids = []
-        selection.forEach(item => {
-          ids.push(item.id)
-        })
-        API.delete(ids).then(res => {
-          this.bulkDeleteModal = false
-          Message.success('删除成功')
-          this.load()
-        }).catch(ex => {
-          this.bulkDeleteModal = false
-          this.loading = false
-        })
-      },
-      enableDeleteBtn(selection) {
-        this.deleteBtnDisabled = false
-        this.recollectIds(selection)
-      },
-      disableDeleteBtn(selection) {
-        this.deleteBtnDisabled = selection.length == 0
-        this.recollectIds(selection)
-      },
-      recollectIds(selection) {
-        if (selection) {
-          this.selection = selection
-        }
-      },
-      goAdd() {
-        this.goEdit(0)
-      },
-      goEdit(id) {
-        this.$store.commit('setQueryInfo', { queryInfo: this.queryInfo, routeName: this.$router.currentRoute.name })
-        this.$store.commit('closeTag', this.$router.currentRoute)
-        this.$router.push({
-          name: 'UserEdit',
-          params: {
-            id
-          }
-        })
-      },
-      triggerStatus(item) {
-        this.loading = true
-        let action = item.enabled ? '禁用' : '启用'
-        let data = {
-          ...item,
-          enabled: !item.enabled
-        }
-        API.save(data).then(res => {
-          this.loading = false
-          Message.success(action + '成功')
-          this.load()
-        }).catch(ex => {
-          this.loading = false
-        })
+      setGoEdit(callback) {
+        this.goEdit = callback
       }
     },
-    mounted: function () {
-      let res = this.$store.state.app.tagNavList.filter(item => item.name !== 'UserEdit')
-      this.$store.commit('setTagNavList', res)
-      this.load()
-    },
-    updated: function() {
-      let routeName = this.$router.currentRoute.name
-      let queryInfo = this.$store.state.app.queryInfo[routeName]
-      if (queryInfo) {
-        this.$store.commit('setQueryInfo', { queryInfo: null, routeName })
-        this.queryInfo = queryInfo
-        this.changePage()
-      }
-    }
   }
 </script>

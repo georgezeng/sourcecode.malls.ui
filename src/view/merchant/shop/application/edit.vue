@@ -26,28 +26,28 @@
     <Card>
       <p slot="title">
         店铺申请审核 ({{form.statusText}})
-      <div class="unpass" :class="{hidden: isUnPay || isChecking || !isUnPassed}"></div>
-      <div class="pass" :class="{hidden: isUnPay || isChecking || isUnPassed}"></div>
+      <div class="unpass" v-if="!(isUnPay || isChecking || !isUnPassed)"></div>
+      <div class="pass" v-if="!(isUnPay || isChecking || isUnPassed)"></div>
       </p>
-      <div slot="extra" :class="{hidden: !isChecking}">
+      <div slot="extra" v-if="isChecking">
         <Button @click="save" type="primary" class="margin-right"
                 :loading="loading">保存
         </Button>
         <Button @click="goList" type="success">返回</Button>
       </div>
-      <div slot="extra" :class="{hidden: isChecking}">
+      <div slot="extra" v-else>
         <Button @click="goList" type="success">返回</Button>
       </div>
       <Form ref="form" :model="form" :rules="rules" :label-width="100">
-        <FormItem label="审核状态" :class="{hidden: isChecking}" prop="statusText">
+        <FormItem label="审核状态" v-if="!isChecking" prop="statusText">
           <Input :value="form.statusText" readonly></Input>
         </FormItem>
-        <FormItem label="审核状态" :class="{hidden: !isChecking}" prop="statusType">
+        <FormItem label="审核状态" v-else prop="statusType">
           <Select v-model="form.status" style="width:200px">
             <Option v-for="item in statusList" :value="item.value" :key="item.value">{{ item.text }}</Option>
           </Select>
         </FormItem>
-        <FormItem label="失败原因" :class="{hidden: !isUnPassed}" prop="reason">
+        <FormItem label="失败原因" v-if="isUnPassed" prop="reason">
           <Input v-model="form.reason" :readonly="!isChecking && isUnPassed" type="textarea"
                  :autosize="{minRows: 2, maxRows: 5}"></Input>
         </FormItem>
@@ -68,15 +68,15 @@
           <Checkbox v-model="form.androidType" disabled>Android版</Checkbox>
           <Checkbox v-model="form.iosType" disabled>IOS版</Checkbox>
         </FormItem>
-        <FormItem :class="{hidden: !(form.androidType || form.iosType)}" prop="types" label="店铺图标">
+        <FormItem v-if="form.androidType || form.iosType" prop="types" label="店铺图标">
           <img :src="androidSmallIconUrl" width="180" height="180" class="float-left"
-               style="margin-right: 20px;" :class="{hidden: !form.androidType}"/>
+               style="margin-right: 20px;" v-if="form.androidType"/>
           <img :src="androidBigIconUrl" width="180" height="180" class="float-left" style="margin-right: 20px;"
-               :class="{hidden: !form.androidType}"/>
+               v-if="form.androidType"/>
           <img :src="iosSmallIconUrl" width="180" height="180" class="float-left" style="margin-right: 20px;"
-               :class="{hidden: !form.iosType}"/>
+               v-if="form.iosType"/>
           <img :src="iosBigIconUrl" width="180" height="180" class="float-left" style="margin-right: 20px;"
-               :class="{hidden: !form.iosType}"/>
+               v-if="form.iosType"/>
           <div class="clearfix"></div>
         </FormItem>
         <FormItem label="App引导页" prop="instructions">

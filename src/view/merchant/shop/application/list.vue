@@ -12,122 +12,111 @@
       v-model="deployModal.open"
       :mask-closable="false"
       :title="modalTitle" :closable="false">
-      <div :class="{hidden: !deployModal.item.androidType}" style="margin-bottom: 20px; position: relative">
-        <Upload :action="androidUrl" with-credentials :show-upload-list="false"
-                :format="['apk']"
-                :on-format-error="showFormatErrorForAndroid"
-                :on-progress="showUploadProgressForAndroid"
-                :on-error="showUploadErrorForAndroid"
-                :on-success="showUploadSuccessForAndroid">
-          <Button :loading="deployModal.androidLoading" icon="logo-android">上传安卓应用</Button>
-        </Upload>
-        <Alert class="uploadAlert" :class="{hidden: !deployModal.androidUploaded}" type="success">
-          上传成功
-        </Alert>
-        <Alert class="uploadAlert" :class="{hidden: !deployModal.androidErrorText}" type="error">
-          {{deployModal.androidErrorText}}
-        </Alert>
-      </div>
-      <div :class="{hidden: !deployModal.item.iosType}" style="position: relative">
-        <Upload :action="iosUrl" :show-upload-list="false" with-credentials
-                :format="['ipa']"
-                :on-format-error="showFormatErrorForIos"
-                :on-progress="showUploadProgressForIos"
-                :on-error="showUploadErrorForIos"
-                :on-success="showUploadSuccessForIos">
-          <Button :loading="deployModal.iosLoading" icon="logo-apple">上传苹果应用</Button>
-        </Upload>
-        <Alert class="uploadAlert" :class="{hidden: !deployModal.iosUploaded}" type="success">
-          上传成功
-        </Alert>
-        <Alert class="uploadAlert" :class="{hidden: !deployModal.iosErrorText}" type="error">
-          {{deployModal.iosErrorText}}
-        </Alert>
-      </div>
+      <Upload v-if="deployModal.item.androidType"
+              style="margin-bottom: 20px; position: relative"
+              :uploadUrl="androidUrl"
+              :formats="['apk']"
+              :maxSize="100000"
+              :loading="loading"
+              btnText="上传安卓应用"
+              btnIcon="logo-android"
+              :tempErrorText="deployModal.androidErrorText"
+              @setPreviewUrl="setAndroidUrl"
+              @setLoading="setLoading"
+              @clearTempErrorText="clearAndroidErrorText"
+      />
+      <Upload v-if="deployModal.item.iosType"
+              style="margin-bottom: 20px; position: relative"
+              :uploadUrl="iosUrl"
+              :formats="['ipa']"
+              :maxSize="100000"
+              :loading="loading"
+              btnText="上传苹果应用"
+              btnIcon="logo-apple"
+              :tempErrorText="deployModal.iosErrorText"
+              @setPreviewUrl="setIosUrl"
+              @setLoading="setLoading"
+              @clearTempErrorText="clearIosErrorText"
+      />
       <div slot="footer">
         <Button type="warning" :loading="loading" @click="closeModal">取消</Button>
         <Button type="primary" :loading="loading" @click="deploy">部署</Button>
       </div>
     </Modal>
 
-    <Card>
-      <Input v-model="queryInfo.data.searchText" class="margin-right" search enter-button @on-search="load"
-             style="float: left; width: 200px; margin-bottom: 5px;"/>
-      <Select @on-change="load" style="width: 100px" v-model="queryInfo.data.statusText">
-        <Option v-for="item in statusList" :value="item.value" :key="item.value">{{item.text}}</Option>
-      </Select>
-      <Table class="margin-top-bottom" :loading="loading" :data="list" :columns="columns"
-             @on-sort-change="sortChange"/>
-      <Page :total="total"
-            :page-size="queryInfo.page.size"
-            :current="queryInfo.page.num"
-            @on-change="changePage"
-            @on-page-size-change="changePageSize"
-            show-elevator show-sizer class="float-right"/>
-      <div class="clearfix"></div>
-    </Card>
+    <CommonTable
+      :statusList="statusList"
+      :useStatus="true"
+      :disableStatusBtns="true"
+      :disableAddBtn="true"
+      :disableDelete="true"
+      :columns="columns"
+      :loading="loading"
+      initSortProperty="updateTime"
+      initSortOrder="DESC"
+      editPageName="MerchantShopApplicationEdit"
+      :filteredPageNames="['MerchantShopApplicationEdit']"
+      :listHandler="listHandler"
+      :queryData="data"
+      @setLoading="setLoading"
+      @setGoEdit="setGoEdit"
+      @setQueryData="setQueryData"
+    >
+    </CommonTable>
   </div>
 </template>
 <script>
   import API from '@/api/merchant-shop-application'
   import {Message} from 'iview'
   import config from '@/config/index'
+  import CommonTable from '@/components/tables/common-table'
+  import Upload from '@/components/upload/file-single-upload'
 
   export default {
     name: 'MerchantShopApplicationList',
-    components: {},
+    components: {
+      CommonTable,
+      Upload
+    },
     data() {
-      let self = this
       return {
         statusList: [
           {
             value: 'Checking',
-            text: '未审核'
+            label: '未审核'
           },
           {
             value: 'Passed',
-            text: '已通过'
+            label: '已通过'
           },
           {
             value: 'UnPassed',
-            text: '未通过'
+            label: '未通过'
           },
           {
             value: 'UnPay',
-            text: '未支付'
+            label: '未支付'
           },
           {
             value: 'all',
-            text: '全部'
+            label: '全部'
           }
         ],
         deployModal: {
           open: false,
-          androidLoading: false,
           androidUploaded: false,
-          androidErrorText: '',
-          iosLoading: false,
           iosUploaded: false,
+          androidErrorText: '',
           iosErrorText: '',
           item: {
             id: 0,
             name: ''
           }
         },
-        queryInfo: {
-          data: {
-            statusText: 'Checking',
-            searchText: ''
-          },
-          page: {
-            num: 1,
-            size: 10,
-            property: 'updateTime',
-            order: 'DESC'
-          }
+        data: {
+          statusText: 'Checking',
+          searchText: ''
         },
-        total: 0,
-        list: [],
         loading: false,
         columns: [
           {title: '用户名', key: 'username', sortable: true},
@@ -191,59 +180,32 @@
       }
     },
     methods: {
-      showUploadProgressForAndroid() {
-        this.loading = true
-        this.deployModal.androidLoading = true
-      },
-      showUploadProgressForIos() {
-        this.loading = true
-        this.deployModal.iosLoading = true
-      },
-      showUploadErrorForAndroid(error) {
-        this.loading = false
-        this.deployModal.androidUploaded = false
-        this.deployModal.androidErrorText = '上传失败'
-        this.deployModal.androidLoading = false
-      },
-      showUploadErrorForIos(error) {
-        this.loading = false
-        this.deployModal.iosUploaded = false
-        this.deployModal.iosErrorText = '上传失败'
-        this.deployModal.iosLoading = false
-      },
-      showUploadSuccessForAndroid(response) {
-        this.loading = false
-        this.deployModal.androidUploaded = true
+      clearAndroidErrorText() {
         this.deployModal.androidErrorText = ''
-        this.deployModal.androidLoading = false
-        this.deployModal.item.androidUrl = response.data
       },
-      showUploadSuccessForIos(response) {
-        this.loading = false
-        this.deployModal.iosUploaded = true
+      clearIosErrorText() {
         this.deployModal.iosErrorText = ''
-        this.deployModal.iosLoading = false
-        this.deployModal.item.iosUrl = response.data
       },
-      showFormatErrorForAndroid() {
-        this.deployModal.androidUploaded = false
-        this.deployModal.androidErrorText = '文件格式必须是apk'
+      setLoading(loading) {
+        this.loading = loading
       },
-      showFormatErrorForIos() {
-        this.deployModal.iosUploaded = false
-        this.deployModal.iosErrorText = '文件格式必须是ipa'
+      setIosUrl(url) {
+        this.deployModal.iosUploaded = true
+        this.deployModal.item.iosUrl = url
+      },
+      setAndroidUrl(url) {
+        this.deployModal.androidUploaded = true
+        this.deployModal.item.androidUrl = url
       },
       closeModal() {
         this.deployModal.item = {
           id: 0,
           name: '',
         }
-        this.deployModal.androidLoading = false
-        this.deployModal.iosLoading = false
-        this.deployModal.androidErrorText = ''
-        this.deployModal.iosErrorText = ''
         this.deployModal.androidUploaded = false
+        this.deployModal.androidErrorText = ''
         this.deployModal.iosUploaded = false
+        this.deployModal.iosErrorText = ''
         this.deployModal.open = false
       },
       deploy() {
@@ -255,9 +217,7 @@
           this.deployModal.iosErrorText = '必须上传苹果应用'
           return
         }
-        this.loading = true
-        this.deployModal.androidLoading = true
-        this.deployModal.iosLoading = true
+        this.setLoading(true)
         let data = {
           id: this.deployModal.item.id,
           status: this.deployModal.item.status.name,
@@ -265,61 +225,20 @@
           iosUrl: this.deployModal.item.iosUrl
         }
         API.deploy(data).then(res => {
-          this.loading = false
+          this.setLoading(false)
           Message.success('部署成功')
           this.closeModal()
         }).catch(ex => {
-          this.loading = false
+          this.setLoading(false)
         })
       },
-      load() {
-        this.changePage(1)
+      listHandler: API.list,
+      setQueryData(data) {
+        this.data.searchText = data.searchText
       },
-      sortChange({key, order}) {
-        if (!order) order = 'ASC'
-        this.queryInfo.page.property = key
-        this.queryInfo.page.order = order.toUpperCase()
-        this.load()
-      },
-      changePage(pageNum) {
-        this.loading = true
-        this.queryInfo.page.num = pageNum ? pageNum : this.queryInfo.page.num
-        API.list(this.queryInfo).then(res => {
-          this.list = res.list
-          this.total = res.total
-          this.loading = false
-        }).catch(ex => {
-          this.loading = false
-        })
-      },
-      changePageSize(pageSize) {
-        this.queryInfo.page.size = pageSize ? pageSize : this.queryInfo.page.size
-        this.changePage(1)
-      },
-      goEdit(id) {
-        this.$store.commit('setQueryInfo', { queryInfo: this.queryInfo, routeName: this.$router.currentRoute.name })
-        this.$store.commit('closeTag', this.$router.currentRoute)
-        this.$router.push({
-          name: 'MerchantShopApplicationEdit',
-          params: {
-            id
-          }
-        })
-      },
-    },
-    mounted: function () {
-      let res = this.$store.state.app.tagNavList.filter(item => item.name !== 'MerchantShopApplicationEdit')
-      this.$store.commit('setTagNavList', res)
-      this.load()
-    },
-    updated: function () {
-      let routeName = this.$router.currentRoute.name
-      let queryInfo = this.$store.state.app.queryInfo[routeName]
-      if (queryInfo) {
-        this.$store.commit('setQueryInfo', { queryInfo: null, routeName })
-        this.queryInfo = queryInfo
-        this.changePage()
+      setGoEdit(callback) {
+        this.goEdit = callback
       }
-    }
+    },
   }
 </script>

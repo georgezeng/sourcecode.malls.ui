@@ -6,7 +6,7 @@
             :on-progress="showUploadProgress"
             :on-error="showUploadError"
             :on-success="showUploadSuccess">
-      <Button icon="ios-cloud-upload-outline">{{btnText}}</Button>
+      <Button :loading="loading" icon="ios-cloud-upload-outline">{{btnText}}</Button>
     </Upload>
     <img class="float-left margin-right-10" :src="previewUrl" :width="previewWidth" :height="previewHeight"/>
     <Alert class="float-left" :class="{hidden: !errorText}" type="error">{{errorText}}</Alert>
@@ -20,7 +20,6 @@
     name: 'ImgOneLineUpload',
     components: {},
     props: [
-      'index',
       'formats',
       'maxSize',
       'uploadUrl',
@@ -55,6 +54,7 @@
       },
       showUploadProgress() {
         this.loading = true
+        this.errorText = ''
       },
       showFormatError() {
         this.errorText = '文件类型只能是' + this.format.join(',')
@@ -76,7 +76,7 @@
           return hasPreview ? this.imgPrefix + this.previewUri : this.uploadPlaceholder
         },
         set(url) {
-          this.$emit('setPreviewUrl', url, this.index)
+          this.$emit('setPreviewUrl', url)
         }
       },
     },

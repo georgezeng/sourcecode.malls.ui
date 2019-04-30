@@ -15,12 +15,14 @@
             :on-error="showUploadError"
             :on-exceeded-size="showExceededError" :on-format-error="showFormatError"
             :on-success="showUploadSuccess">
-      <Button :loading="loading" icon="ios-cloud-upload-outline">{{btnText}}</Button>
+      <Button :loading="loading" :icon="btnIcon">{{btnText}}</Button>
     </Upload>
-    <Alert class="uploadAlert" :class="{hidden: !errorText}" type="error">
-      {{errorText}}
+    <Alert class="uploadAlert" v-if="uploaded" type="success">
+      上传成功
     </Alert>
-    <img :src="previewUrl" :width="previewWidth" :height="previewHeight"/>
+    <Alert class="uploadAlert" v-if="showErrorText" type="error">
+      {{showErrorText}}
+    </Alert>
   </div>
 </template>
 
@@ -32,71 +34,58 @@
     name: 'ImgSingleUpload',
     components: {},
     props: [
+      'btnIcon',
       'formats',
       'maxSize',
       'uploadUrl',
       'previewUri',
       'btnText',
       'imgPrefix',
-      'width',
-      'height'
+      'loading',
+      'tempErrorText'
     ],
     data() {
       let format = this.formats ? this.formats : ['png']
       let size = this.maxSize ? parseInt(this.maxSize) : 3000
-      let previewWidth = this.width ? this.width : 'auto'
-      let previewHeight = this.height ? this.height : 'auto'
-      let originalWidth = previewWidth
-      let originalHeight = previewHeight
       return {
         format,
         size,
-        previewWidth,
-        previewHeight,
-        originalWidth,
-        originalHeight,
         errorText: null,
-        loading: false
+        uploaded: false
+      }
+    },
+    computed: {
+      showErrorText() {
+        return this.tempErrorText ? this.tempErrorText : this.errorText
       }
     },
     methods: {
       showUploadError() {
-        this.loading = false
+        this.$emit('clearTempErrorText')
+        this.$emit('setLoading', false)
         this.errorText = '上传失败'
       },
       showUploadProgress() {
-        this.loading = true
         this.errorText = ''
+        this.$emit('clearTempErrorText')
+        this.uploaded = false
+        this.$emit('setLoading', true)
       },
       showFormatError() {
+        this.$emit('clearTempErrorText')
         this.errorText = '文件类型只能是' + this.format.join(',')
       },
       showUploadSuccess(response, file, fileList) {
-        this.loading = false
-        this.previewUrl = response.data
+        this.$emit('setLoading', false)
+        this.$emit('setPreviewUrl', response.data)
+        this.$emit('clearTempErrorText')
         this.errorText = ''
+        this.uploaded = true
         Message.success('上传成功')
       },
       showExceededError() {
+        this.$emit('clearTempErrorText')
         this.errorText = '文件大小必须在' + this.size + 'KB以内'
-      },
-    },
-    computed: {
-      previewUrl: {
-        get() {
-          let hasPreview = this.previewUri != null
-          if (!hasPreview) {
-            this.previewWidth = 'auto'
-            this.previewHeight = 'auto'
-          } else {
-            this.previewWidth = this.originalWidth
-            this.previewHeight = this.originalHeight
-          }
-          return hasPreview ? this.imgPrefix + this.previewUri : uploadPlaceholder
-        },
-        set(url) {
-          this.$emit('setPreviewUrl', url)
-        }
       },
     },
   }
