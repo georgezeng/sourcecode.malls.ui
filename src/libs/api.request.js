@@ -2,7 +2,7 @@
 import axios from 'axios'
 import config from '@/config'
 import router from '@/router'
-import { Message } from 'iview'
+import {Message} from 'iview'
 import {
   setTagNavListInLocalstorage,
   setToken
@@ -20,27 +20,28 @@ const ajax = axios.create({
 })
 
 ajax.interceptors.response.use(function (response) {
-  if (response.data) {
-    if (response.data.code !== 0) {
-      if (!response.data.msgs && response.request && response.request.responseURL && response.request.responseURL.indexOf('login') > -1) {
-        setTagNavListInLocalstorage([])
-        setToken('')
-        router.push({
-          name: 'Login'
-        })
-        return response.data
-      }
-      alertError(response.data)
-      return Promise.reject(response.data)
-    }
+  if (response.data.code == -1) {
+    setTagNavListInLocalstorage([])
+    setToken('')
+    router.push({
+      name: LOGIN_PAGE_NAME
+    })
+    return response.data
+  } else if (response.data.code == 1) {
+    alertError(response.data)
+    return Promise.reject(response.data)
   }
-  return response.data.data || response.data.datas
+  if (response.data.data || response.data.datas) {
+    return response.data.data || response.data.datas
+  } else {
+    return response.data
+  }
 }, function (ex) {
   handleError(ex)
   return Promise.reject(ex)
 })
 
-function handleError (ex) {
+function handleError(ex) {
   let code = Number(ex && ex.response && ex.response.status)
   switch (code) {
     case 403:
@@ -49,18 +50,11 @@ function handleError (ex) {
         name: 'error_401'
       })
       return
-    case 302:
-      setTagNavListInLocalstorage([])
-      setToken('')
-      router.push({
-        name: LOGIN_PAGE_NAME
-      })
-      return
   }
   alertError(ex.response && ex.response.data)
 }
 
-function alertError (error) {
+function alertError(error) {
   let errors = null
   if (error && error.msgs) {
     errors = '[' + error.traceId + '] '

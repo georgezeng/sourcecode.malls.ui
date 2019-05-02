@@ -1,8 +1,7 @@
 <style>
   .uploadAlert {
     float: left;
-    top: 0px;
-    left: 110px;
+    top: -2px;
     position: absolute;
   }
 </style>
@@ -17,7 +16,7 @@
             :on-success="showUploadSuccess">
       <Button :loading="loading" icon="ios-cloud-upload-outline">{{btnText}}</Button>
     </Upload>
-    <Alert class="uploadAlert" :class="{hidden: !errorText}" type="error">
+    <Alert class="uploadAlert" :style="{left: alertLeft ? alertLeft : '110px'}" :class="{hidden: !errorText}" type="error">
       {{errorText}}
     </Alert>
     <img :src="previewUrl" :width="previewWidth" :height="previewHeight"/>
@@ -27,6 +26,10 @@
 <script>
   import {Message} from 'iview'
   import uploadPlaceholder from '@/assets/images/upload-placeholder.png'
+  import {
+    setTagNavListInLocalstorage,
+    setToken
+  } from '@/libs/util'
 
   export default {
     name: 'ImgSingleUpload',
@@ -39,6 +42,7 @@
       'btnText',
       'imgPrefix',
       'width',
+      'alertLeft',
       'height'
     ],
     data() {
@@ -73,9 +77,19 @@
       },
       showUploadSuccess(response, file, fileList) {
         this.loading = false
-        this.previewUrl = response.data
-        this.errorText = ''
-        Message.success('上传成功')
+        if (response.code == 0) {
+          this.previewUrl = response.data
+          this.errorText = ''
+          Message.success('上传成功')
+        } else if(response.code == -1) {
+          setTagNavListInLocalstorage([])
+          setToken('')
+          this.$router.push({
+            name: 'Login'
+          })
+        } else {
+          this.errorText = response.msgs[0]
+        }
       },
       showExceededError() {
         this.errorText = '文件大小必须在' + this.size + 'KB以内'

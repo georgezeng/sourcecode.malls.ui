@@ -109,7 +109,6 @@
     data() {
       return {
         loading: false,
-        imgPrefix: config.baseUrl + '/merchant/shop/application/img/load?filePath=',
         statusList: [
           {
             value: 'Passed',
@@ -186,6 +185,9 @@
       },
     },
     computed: {
+      imgPrefix() {
+        return config.baseUrl + '/merchant/shop/application/file/load/params/' + this.form.id + '?filePath='
+      },
       isUnPay() {
         let isUnPay = this.status === 'UnPay'
         return isUnPay

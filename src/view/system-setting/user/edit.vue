@@ -27,7 +27,7 @@
         <FormItem label="头像" prop="header">
           <Upload
             :uploadUrl="uploadUrl"
-            :previewUri="form.header"
+            :previewUri="form.avatar"
             btnText="上传头像"
             :imgPrefix="imgPrefix"
             :uploadPlaceholder="avatar"
@@ -85,7 +85,7 @@
           password: '',
           mobile: '',
           enabled: 'true',
-          header: null,
+          avatar: null,
           roles: []
         },
         statusList: [
@@ -100,20 +100,18 @@
         rules: {
           username: [
             {required: true, message: '用户名不能为空', trigger: 'change'},
-            {min: 5, message: '用户名不能少于5位', trigger: 'change'},
             {max: 50, message: '用户名不能多于50位', trigger: 'change'}
           ],
           email: [
             {required: true, message: '邮箱不能为空', trigger: 'change'},
             {type: 'email', message: '邮箱格式不正确', trigger: 'change'},
-            {min: 5, message: '邮箱不能少于5位', trigger: 'change'},
             {max: 50, message: '邮箱不能多于50位', trigger: 'change'}
           ],
           password: [
             {required: !isEdit, message: '密码不能为空', trigger: 'change'},
             {
               type: 'string',
-              pattern: /^(?=.*[0-9].*)(?=.*[A-Za-z].*).{8,}$/,
+              pattern: /^(?=.*[0-9].*)(?=.*[A-Z].*)(?=.*[a-z].*).{8,}$/,
               message: '密码必须数字+字母（区分大小写）并且不少于8位',
               trigger: 'change'
             },
@@ -238,7 +236,7 @@
         }
       },
       setPreviewUrl(url, index) {
-        this.form.header = url
+        this.form.avatar = url
       },
       setConfirmPasswordStatus() {
         let required = this.form.password !== ''
@@ -254,10 +252,10 @@
         return this.form.id != null && this.form.id != 0
       },
       uploadUrl() {
-        return config.baseUrl + '/user/upload/header'
+        return config.baseUrl + '/user/file/upload/params/' + this.form.id
       },
       imgPrefix() {
-        return config.baseUrl + '/user/header/preview/params/' + this.form.id + '?filePath='
+        return config.baseUrl + '/user/file/load/params/' + this.form.id + '?filePath='
       }
     },
     mounted: function () {

@@ -26,8 +26,8 @@
     <Card>
       <p slot="title">
         实名认证审核 ({{form.statusText}})
-        <div class="unpass" v-if="!(isChecking || !isUnPassed)"></div>
-        <div class="pass" v-if="!(isChecking || isUnPassed)"></div>
+      <div class="unpass" v-if="!(isChecking || !isUnPassed)"></div>
+      <div class="pass" v-if="!(isChecking || isUnPassed)"></div>
       </p>
       <div slot="extra" v-if="isChecking">
         <Button @click="save" type="primary" class="margin-right"
@@ -64,7 +64,7 @@
           <Input v-model="form.number" readonly></Input>
         </FormItem>
         <FormItem label="证件照" prop="photo">
-          <img :src="imgPreviewUrl" readonly/>
+          <img :src="imgPreviewUrl"/>
         </FormItem>
         <FormItem label="联系人" prop="contact">
           <Input v-model="form.contact" readonly></Input>
@@ -182,7 +182,7 @@
         return isUnPassed
       },
       imgPreviewUrl() {
-        return this.form.photo != null ? config.baseUrl + '/merchant/verification/photo/load/params/' + this.form.id : uploadPlaceholder
+        return this.form.photo ? config.baseUrl + '/merchant/verification/file/load/params/' + this.form.id + '?filePath=' + this.form.photo : uploadPlaceholder
       }
     },
     mounted: function () {

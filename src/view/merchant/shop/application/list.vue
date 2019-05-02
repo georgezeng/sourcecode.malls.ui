@@ -14,7 +14,7 @@
       :title="modalTitle" :closable="false">
       <Upload v-if="deployModal.item.androidType"
               style="margin-bottom: 20px; position: relative"
-              :uploadUrl="androidUrl"
+              :uploadUrl="uploadUrl"
               :formats="['apk']"
               :maxSize="100000"
               :loading="loading"
@@ -27,7 +27,7 @@
       />
       <Upload v-if="deployModal.item.iosType"
               style="margin-bottom: 20px; position: relative"
-              :uploadUrl="iosUrl"
+              :uploadUrl="uploadUrl"
               :formats="['ipa']"
               :maxSize="100000"
               :loading="loading"
@@ -151,6 +151,7 @@
                   props: {
                     type: 'success',
                     size: 'small',
+                    disabled: params.row.status.name !== 'Passed'
                   },
                   style: {
                     marginLeft: '10px'
@@ -172,12 +173,9 @@
       modalTitle() {
         return '部署[' + this.deployModal.item.name + ']'
       },
-      androidUrl() {
-        return config.baseUrl + '/merchant/shop/application/upload/params/' + this.deployModal.item.id + '/android'
+      uploadUrl() {
+        return config.baseUrl + '/merchant/shop/application/file/upload/params/' + this.deployModal.item.id
       },
-      iosUrl() {
-        return config.baseUrl + '/merchant/shop/application/upload/params/' + this.deployModal.item.id + '/ios'
-      }
     },
     methods: {
       clearAndroidErrorText() {

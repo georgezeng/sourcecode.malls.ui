@@ -20,7 +20,7 @@ import parentView from '@/components/parent-view'
 
 export default [
   {
-    path: '/login',
+    path: '/Login',
     name: 'Login',
     meta: {
       title: '登录',
@@ -58,7 +58,7 @@ export default [
     name: 'MerchantManage',
     meta: {
       access: ['AUTH_SUPER_ADMIN',
-        'AUTH_MERCHANT_LIST_PAGE',
+        'AUTH_MERCHANT_USER_LIST_PAGE',
         'AUTH_MERCHANT_SHOP_APPLICATION_LIST_PAGE',
         'AUTH_MERCHANT_VERIFICATION_LIST_PAGE'],
       icon: 'md-menu',
@@ -68,13 +68,13 @@ export default [
     component: Main,
     children: [
       {
-        path: 'List',
-        name: 'MerchantList',
-        component: () => import('@/view/merchant/list.vue'),
+        path: 'UserList',
+        name: 'MerchantUserList',
+        component: () => import('@/view/merchant/user/list.vue'),
         meta: {
           icon: 'md-funnel',
           title: '商家列表',
-          access: ['AUTH_SUPER_ADMIN', 'AUTH_MERCHANT_LIST_PAGE'],
+          access: ['AUTH_SUPER_ADMIN', 'AUTH_MERCHANT_USER_LIST_PAGE'],
           notCache: true
         }
       },
@@ -84,7 +84,7 @@ export default [
         component: () => import('@/view/merchant/verification/list.vue'),
         meta: {
           icon: 'md-funnel',
-          title: '实名认证',
+          title: '实名审核',
           access: ['AUTH_SUPER_ADMIN', 'AUTH_MERCHANT_VERIFICATION_LIST_PAGE'],
           notCache: true
         }
@@ -96,7 +96,7 @@ export default [
         meta: {
           hideInMenu: true,
           icon: 'md-funnel',
-          title: '实名认证审核',
+          title: '实名审核',
           access: ['AUTH_SUPER_ADMIN', 'AUTH_MERCHANT_VERIFICATION_EDIT_PAGE'],
           notCache: true
         }
@@ -107,7 +107,7 @@ export default [
         component: () => import('@/view/merchant/shop/application/list.vue'),
         meta: {
           icon: 'md-funnel',
-          title: '店铺申请',
+          title: '店铺审核',
           access: ['AUTH_SUPER_ADMIN', 'AUTH_MERCHANT_SHOP_APPLICATION_LIST_PAGE'],
           notCache: true
         }
@@ -119,7 +119,7 @@ export default [
         meta: {
           hideInMenu: true,
           icon: 'md-funnel',
-          title: '店铺申请审核',
+          title: '店铺审核',
           access: ['AUTH_SUPER_ADMIN', 'AUTH_MERCHANT_SHOP_APPLICATION_EDIT_PAGE'],
           notCache: true
         }

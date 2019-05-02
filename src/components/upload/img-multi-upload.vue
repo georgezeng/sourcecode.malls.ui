@@ -32,6 +32,10 @@
 <script>
   import {Message} from 'iview'
   import uploadPlaceholder from '@/assets/images/upload-placeholder.png'
+  import {
+    setTagNavListInLocalstorage,
+    setToken
+  } from '@/libs/util'
 
   export default {
     name: 'ImgMultiUpload',
@@ -81,9 +85,19 @@
       },
       showUploadSuccess(response, file, fileList) {
         this.loading = false
-        this.previewUrl = response.data
-        this.errorText = ''
-        Message.success('上传成功')
+        if (response.code == 0) {
+          this.previewUrl = response.data
+          this.errorText = ''
+          Message.success('上传成功')
+        } else if(response.code == -1) {
+          setTagNavListInLocalstorage([])
+          setToken('')
+          this.$router.push({
+            name: 'Login'
+          })
+        } else {
+          this.errorText = response.msgs[0]
+        }
       },
       showExceededError() {
         this.errorText = '文件大小必须在' + this.size + 'KB以内'

@@ -17,17 +17,16 @@
     :filteredPageNames="['MerchantEdit']"
     :listHandler="listHandler"
     @setLoading="setLoading"
-    @setGoEdit="setGoEdit"
   >
   </CommonTable>
 </template>
 <script>
-  import API from '@/api/merchant'
+  import API from '@/api/merchant-user'
   import {Message} from 'iview'
   import CommonTable from '@/components/tables/common-table'
 
   export default {
-    name: 'UserList',
+    name: 'MerchantUserList',
     components: {
       CommonTable
     },
@@ -102,9 +101,6 @@
       setTriggerStatus(callback) {
         this.triggerStatus = callback
       },
-      setGoEdit(callback) {
-        this.goEdit = callback
-      }
     },
   }
 </script>

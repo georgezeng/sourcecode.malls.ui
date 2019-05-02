@@ -5,7 +5,7 @@ export default {
     return axios.post('/merchant/verification/list', queryInfo)
   },
   load: (id) => {
-    return axios.get('/merchant/verification/one/params/' + id)
+    return axios.get('/merchant/verification/load/params/' + id)
   },
   save: (obj) => {
     return axios.post('/merchant/verification/save', obj)

@@ -29,7 +29,7 @@ export default {
   },
   mutations: {
     setAvator(state, avatorPath) {
-      state.avatorImgPath = config.baseUrl + '/user/header/load/current'
+      state.avatorImgPath = config.baseUrl + '/user/current/avatar?t=' + new Date().getTime()
     },
     setUserId(state, id) {
       state.userId = id

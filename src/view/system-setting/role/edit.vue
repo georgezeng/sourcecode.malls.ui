@@ -68,12 +68,10 @@
         rules: {
           code: [
             {required: true, message: '编码不能为空', trigger: 'blur'},
-            {min: 5, message: '编码不能少于5位', trigger: 'change'},
             {max: 50, message: '编码不能多于50位', trigger: 'change'}
           ],
           name: [
             {required: true, message: '角色名不能为空', trigger: 'blur'},
-            {min: 2, message: '角色名不能少于2位', trigger: 'change'},
             {max: 50, message: '角色名不能多于50位', trigger: 'change'}
           ],
           description: [

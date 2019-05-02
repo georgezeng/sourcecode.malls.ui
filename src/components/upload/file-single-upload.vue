@@ -29,6 +29,10 @@
 <script>
   import {Message} from 'iview'
   import uploadPlaceholder from '@/assets/images/upload-placeholder.png'
+  import {
+    setTagNavListInLocalstorage,
+    setToken
+  } from '@/libs/util'
 
   export default {
     name: 'ImgSingleUpload',
@@ -77,11 +81,21 @@
       },
       showUploadSuccess(response, file, fileList) {
         this.$emit('setLoading', false)
-        this.$emit('setPreviewUrl', response.data)
-        this.$emit('clearTempErrorText')
-        this.errorText = ''
-        this.uploaded = true
-        Message.success('上传成功')
+        if (response.code == 0) {
+          this.$emit('setPreviewUrl', response.data)
+          this.$emit('clearTempErrorText')
+          this.errorText = ''
+          this.uploaded = true
+          Message.success('上传成功')
+        } else if(response.code == -1) {
+          setTagNavListInLocalstorage([])
+          setToken('')
+          this.$router.push({
+            name: 'Login'
+          })
+        } else {
+          this.errorText = response.msgs[0]
+        }
       },
       showExceededError() {
         this.$emit('clearTempErrorText')

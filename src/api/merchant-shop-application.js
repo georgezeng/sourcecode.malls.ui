@@ -5,7 +5,7 @@ export default {
     return axios.post('/merchant/shop/application/list', queryInfo)
   },
   load: (id) => {
-    return axios.get('/merchant/shop/application/one/params/' + id)
+    return axios.get('/merchant/shop/application/load/params/' + id)
   },
   save: (obj) => {
     return axios.post('/merchant/shop/application/save', obj)
