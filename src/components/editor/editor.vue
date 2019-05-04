@@ -70,6 +70,6 @@ export default {
 
 <style lang="less">
 .editor-wrapper *{
-  z-index: 100 !important;
+  z-index: 10 !important;
 }
 </style>

@@ -12,32 +12,39 @@
       v-model="deployModal.open"
       :mask-closable="false"
       :title="modalTitle" :closable="false">
-      <Upload v-if="deployModal.item.androidType"
-              style="margin-bottom: 20px; position: relative"
-              :uploadUrl="uploadUrl"
-              :formats="['apk']"
-              :maxSize="100000"
-              :loading="loading"
-              btnText="上传安卓应用"
-              btnIcon="logo-android"
-              :tempErrorText="deployModal.androidErrorText"
-              @setPreviewUrl="setAndroidUrl"
-              @setLoading="setLoading"
-              @clearTempErrorText="clearAndroidErrorText"
-      />
-      <Upload v-if="deployModal.item.iosType"
-              style="margin-bottom: 20px; position: relative"
-              :uploadUrl="uploadUrl"
-              :formats="['ipa']"
-              :maxSize="100000"
-              :loading="loading"
-              btnText="上传苹果应用"
-              btnIcon="logo-apple"
-              :tempErrorText="deployModal.iosErrorText"
-              @setPreviewUrl="setIosUrl"
-              @setLoading="setLoading"
-              @clearTempErrorText="clearIosErrorText"
-      />
+      <Form>
+        <FormItem label="域名">
+          {{deployModal.item.domain}}.sourcecode.com
+        </FormItem>
+        <FormItem v-if="deployModal.item.androidType" label="">
+          <Upload
+                  :uploadUrl="uploadUrl"
+                  :formats="['apk']"
+                  :maxSize="100000"
+                  :loading="loading"
+                  btnText="上传安卓应用"
+                  btnIcon="logo-android"
+                  :tempErrorText="deployModal.androidErrorText"
+                  @setPreviewUrl="setAndroidUrl"
+                  @setLoading="setLoading"
+                  @clearTempErrorText="clearAndroidErrorText"
+          />
+        </FormItem>
+        <FormItem v-if="deployModal.item.iosType" label="">
+          <Upload
+                  :uploadUrl="uploadUrl"
+                  :formats="['ipa']"
+                  :maxSize="100000"
+                  :loading="loading"
+                  btnText="上传苹果应用"
+                  btnIcon="logo-apple"
+                  :tempErrorText="deployModal.iosErrorText"
+                  @setPreviewUrl="setIosUrl"
+                  @setLoading="setLoading"
+                  @clearTempErrorText="clearIosErrorText"
+          />
+        </FormItem>
+      </Form>
       <div slot="footer">
         <Button type="warning" :loading="loading" @click="closeModal">取消</Button>
         <Button type="primary" :loading="loading" @click="deploy">部署</Button>
