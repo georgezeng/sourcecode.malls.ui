@@ -19,7 +19,7 @@
           <Input v-model="form.link" placeholder="输入链接"></Input>
         </FormItem>
         <FormItem label="请求方法">
-          <Select v-model="form.method" style="width:200px">
+          <Select v-model="form.method">
             <Option v-for="method in methods" :value="method" :key="method">{{ method }}</Option>
           </Select>
         </FormItem>

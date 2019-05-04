@@ -37,7 +37,7 @@
           />
         </FormItem>
         <FormItem label="状态">
-          <Select v-model="form.enabled" style="width:200px">
+          <Select v-model="form.enabled">
             <Option v-for="status in statusList" :value="status.value" :key="status.value">{{ status.text }}</Option>
           </Select>
         </FormItem>
