@@ -6,7 +6,8 @@
 
 <template>
   <div>
-    <MultiSelect :list="leftFilterList" :originList="originLeftList" :isLeft="true" @setList="setList" class="multi-input"/>
+    <MultiSelect :list="leftFilterList" :originList="originLeftList" :isLeft="true" @setList="setList"
+                 class="multi-input"/>
     <div class="float-left" style="margin: 50px;">
       <Button style="display: block; margin-bottom: 10px;" @click="addItems">
         <Icon type="ios-arrow-forward"/>
@@ -39,54 +40,70 @@
     },
     methods: {
       addItems() {
-        let leftArr = []
-        let rightArr = this.rightList.concat()
         let leftList = this.leftFilterList
+        let removeArr = []
         for (let i in leftList) {
           let item = leftList[i]
-          if (!item.selected) {
-            leftArr.push(item)
-          } else {
-            let found = false
-            for (let j in rightArr) {
-              let rightItem = rightArr[j]
-              if (rightItem.key == item.key) {
-                found = true
-                item = rightItem
-                break
-              }
-            }
-            if (!found) {
-              item.selected = false
-              rightArr.push(item)
-            }
+          if (item.selected) {
+            removeArr.push(item)
           }
         }
+        let rightArr = this.rightList.concat()
+        let leftArr = null
+        do {
+          leftArr = this.originLeftList
+          for (let i in leftArr) {
+            if (removeArr[0].key == leftArr[i].key) {
+              removeArr.splice(0, 1)
+              let item = leftArr.splice(i, 1)[0]
+              item.selected = false
+              let found = false
+              for (let j in rightArr) {
+                if (rightArr[j].key == item.key) {
+                  found = true
+                  break
+                }
+              }
+              if (!found) {
+                rightArr.splice(0, 0, item)
+              }
+              break
+            }
+          }
+        } while (removeArr.length > 0)
         this.$emit('set-multi-selectors-data', leftArr, rightArr, true)
       },
       removeItems() {
-        let leftArr = this.leftFilterList.concat()
-        let rightArr = []
+        let removeArr = []
         for (let i in this.rightList) {
           let item = this.rightList[i]
-          if (!item.selected) {
-            rightArr.push(item)
-          } else {
-            let found = false
-            for (let j in leftArr) {
-              let leftItem = leftArr[j]
-              if (leftItem.key == item.key) {
-                found = true
-                item = leftItem
-                break
-              }
-            }
-            if (!found) {
-              item.selected = false
-              leftArr.push(item)
-            }
+          if (item.selected) {
+            removeArr.push(item)
           }
         }
+        let leftArr = this.leftList.concat()
+        let rightArr = null
+        do {
+          rightArr = this.originRightList
+          for (let i in rightArr) {
+            if (removeArr[0].key == rightArr[i].key) {
+              removeArr.splice(0, 1)
+              let item = rightArr.splice(i, 1)[0]
+              item.selected = false
+              let found = false
+              for (let j in leftArr) {
+                if (leftArr[j].key == item.key) {
+                  found = true
+                  break
+                }
+              }
+              if (!found) {
+                leftArr.splice(0, 0, item)
+              }
+              break
+            }
+          }
+        } while (removeArr.length > 0)
         this.$emit('set-multi-selectors-data', leftArr, rightArr, true)
       },
       setList(list, isLeft) {

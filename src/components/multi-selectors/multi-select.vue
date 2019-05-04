@@ -10,7 +10,7 @@
     <Input placeholder="快速搜索" v-model="searchText" clearable />
     <ul class="outline-border"
         style="list-style: none; padding: 10px; height: 300px; overflow: auto;">
-      <li ref="item" v-for="(item, index) in filteredList" :key="item.key" style="cursor: pointer; padding: 0 5px;"
+      <li ref="item" :class="{selected: item.selected}" v-for="(item, index) in filteredList" :key="item.key" style="cursor: pointer; padding: 0 5px;"
           @click="triggerItem(item, index)">
         {{ item.text }}
       </li>
@@ -35,7 +35,18 @@
     computed: {
       filteredList: {
         get() {
-          return this.list
+          let arr = []
+          if (this.searchText) {
+            for (let i in this.originList) {
+              let item = this.originList[i]
+              if (item.text.indexOf(this.searchText) > -1) {
+                arr.push(item)
+              }
+            }
+          } else {
+            arr = this.list
+          }
+          return arr
         },
         set(text) {
           let arr = []
@@ -61,11 +72,6 @@
     methods: {
       triggerItem(item, index) {
         item.selected = !item.selected
-        if (item.selected) {
-          this.$refs.item[index].className = 'selected'
-        } else {
-          this.$refs.item[index].className = ''
-        }
       }
     }
   }
