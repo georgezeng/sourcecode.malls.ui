@@ -111,11 +111,10 @@
             {required: !isEdit, message: '密码不能为空', trigger: 'change'},
             {
               type: 'string',
-              pattern: /^(?=.*[0-9].*)(?=.*[A-Z].*)(?=.*[a-z].*).{8,}$/,
+              pattern: /^(?=.*[0-9].*)(?=.*[A-Za-z].*).{8,}$/,
               message: '密码必须数字+字母（区分大小写）并且不少于8位',
               trigger: 'change'
-            },
-            {max: 20, message: '密码不能多于20位', trigger: 'change'}
+            }
           ],
           confirmPassword: [
             {required: !isEdit, message: '确认密码不能为空', trigger: 'change'},

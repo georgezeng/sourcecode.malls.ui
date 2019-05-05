@@ -26,7 +26,7 @@ ajax.interceptors.response.use(function (response) {
     router.push({
       name: LOGIN_PAGE_NAME
     })
-    return response.data
+    return Promise.reject(response.data)
   } else if (response.data.code == 1) {
     alertError(response.data)
     return Promise.reject(response.data)
