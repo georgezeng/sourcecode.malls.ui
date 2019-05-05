@@ -66,7 +66,7 @@
              @on-select-all="enableBtns"
              @on-select="enableBtns" @on-sort-change="sortChange"
              @on-select-all-cancel="disableBtns" @on-select-cancel="disableBtns"/>
-      <Page :total="total"
+      <Page v-if="!hidePage" :total="total"
             :page-size="queryInfo.page.size"
             :current="queryInfo.page.num"
             @on-change="changePage"
@@ -83,6 +83,7 @@
     name: 'CommonTable',
     components: {},
     props: [
+      'hidePage',
       'listHandler',
       'deleteHandler',
       'updateStatusHandler',
@@ -111,6 +112,7 @@
       'useParent',
       'disableAddBtn',
       'disableStatusBtns',
+      'initPageSize'
     ],
     data() {
       return {
@@ -125,7 +127,7 @@
           },
           page: {
             num: 1,
-            size: 10,
+            size: this.initPageSize ? this.initPageSize : 10,
             property: this.initSortProperty,
             order: this.initSortOrder ? this.initSortOrder : 'ASC'
           }
@@ -213,6 +215,7 @@
         })
         this.deleteHandler(ids).then(res => {
           this.setLoading(false)
+          this.bulkDeleteModal = false
           Message.success('删除成功')
           this.load()
         }).catch(ex => {
@@ -245,6 +248,7 @@
         })
         this.updateStatusHandler(ids, false).then(res => {
           this.setLoading(false)
+          this.bulkStatusModal = false
           Message.success(this.disableStatusText + '成功')
           this.load()
         }).catch(ex => {
@@ -257,8 +261,9 @@
         this.selection.forEach(item => {
           ids.push(item.id)
         })
-        this.updateStatusHandler(ids, false).then(res => {
+        this.updateStatusHandler(ids, true).then(res => {
           this.setLoading(false)
+          this.bulkStatusModal = false
           Message.success(this.enableStatusText + '成功')
           this.load()
         }).catch(ex => {
@@ -329,12 +334,13 @@
         })
       },
       goSubList(id) {
+        this.ids.push(id)
         this.$store.commit('setQueryInfo', {queryInfo: this.queryInfo, routeName: this.$router.currentRoute.name})
         this.$store.commit('closeTag', this.$router.currentRoute)
         this.$router.push({
           name: this.subPageName,
           params: {
-            ids: id
+            ids: this.ids.join(',')
           }
         })
       },
