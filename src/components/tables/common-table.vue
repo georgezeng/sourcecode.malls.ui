@@ -6,7 +6,7 @@
         <span>操作提示</span>
       </p>
       <div>
-        <p>确定要删除选中的记录吗?</p>
+        <p>确定要{{deleteTxt}}选中的记录吗?</p>
         <ul style="list-style: none;">
           <li v-for="item in selection">
             {{ item[deleteItemName] }}
@@ -58,9 +58,9 @@
               class="margin-left float-right margin-right" type="success">批量{{enableStatusText}}
       </Button>
       <Button v-if="!disableDelete" @click="bulkDeleteModal=true" :disabled="deleteBtnDisabled" class="float-right"
-              type="error">批量删除
+              type="error">批量{{deleteTxt}}
       </Button>
-      <Button v-if="!disableAddBtn" @click="goAdd" class="float-right margin-right" type="primary">新增</Button>
+      <Button v-if="!disableAddBtn" @click="goAdd" class="float-right margin-right" type="primary">{{addBtnTxt}}</Button>
       <div class="clearfix"></div>
       <Table class="margin-top-bottom" :loading="loading" :data="list" :columns="columns"
              @on-select-all="enableBtns"
@@ -112,7 +112,9 @@
       'useParent',
       'disableAddBtn',
       'disableStatusBtns',
-      'initPageSize'
+      'initPageSize',
+      'addBtnText',
+      'deleteText'
     ],
     data() {
       return {
@@ -144,6 +146,12 @@
       }
     },
     computed: {
+      deleteTxt() {
+        return this.deleteText ? this.deleteText : '删除'
+      },
+      addBtnTxt() {
+        return this.addBtnText ? this.addBtnText : '新增'
+      },
       showStatusBtns() {
         return this.useStatus && !this.disableStatusBtns
       },
@@ -213,7 +221,7 @@
         selection.forEach(item => {
           ids.push(item.id)
         })
-        this.deleteHandler(ids).then(res => {
+        this.deleteHandler(ids, this.queryInfo.data.parent.id).then(res => {
           this.setLoading(false)
           this.bulkDeleteModal = false
           Message.success('删除成功')
@@ -371,6 +379,7 @@
       if (this.$router.currentRoute.params.ids) {
         this.ids = (this.$router.currentRoute.params.ids + '').split(',')
         this.queryInfo.data.parent.id = this.ids[this.ids.length - 1]
+        this.$emit('initForParentId', this.queryInfo.data.parent.id)
       }
       this.$emit('setGoEdit', this.goEdit)
       this.$emit('setDeleteData', this.deleteData)
