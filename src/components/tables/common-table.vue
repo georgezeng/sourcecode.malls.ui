@@ -221,7 +221,7 @@
         selection.forEach(item => {
           ids.push(item.id)
         })
-        this.deleteHandler(ids, this.queryInfo.data.parent.id).then(res => {
+        this.deleteHandler(ids).then(res => {
           this.setLoading(false)
           this.bulkDeleteModal = false
           Message.success('删除成功')
