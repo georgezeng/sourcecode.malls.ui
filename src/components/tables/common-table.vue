@@ -261,7 +261,8 @@
         this.selection.forEach(item => {
           ids.push(item.id)
         })
-        this.updateStatusHandler(ids, enable).then(res => {
+        let parentId = this.queryInfo.data.parent ? this.queryInfo.data.parent.id : 0
+        this.updateStatusHandler(ids, enable, parentId).then(res => {
           this.setLoading(false)
           this.bulkStatusModal = false
           Message.success(this.txt + '成功')
@@ -302,12 +303,13 @@
           this.selection = selection
         }
       },
-      triggerStatus(item, extend) {
+      triggerStatus(item) {
         this.setLoading(true)
         let action = item.enabled ? this.disableStatusText : this.enableStatusText
         let ids = []
         ids.push(item.id)
-        this.updateStatusHandler(ids, !item.enabled, extend).then(res => {
+        let parentId = this.queryInfo.data.parent ? this.queryInfo.data.parent.id : 0
+        this.updateStatusHandler(ids, !item.enabled, parentId).then(res => {
           this.setLoading(false)
           Message.success(action + '成功')
           this.load()
