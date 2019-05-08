@@ -114,7 +114,8 @@
       'disableStatusBtns',
       'initPageSize',
       'addBtnText',
-      'deleteText'
+      'deleteText',
+      'initStatusText'
     ],
     data() {
       return {
@@ -125,7 +126,7 @@
               id: 0
             },
             searchText: '',
-            statusText: 'all'
+            statusText: this.initStatusText ? this.initStatusText : 'all'
           },
           page: {
             num: 1,
@@ -157,7 +158,7 @@
       },
       showBackBtn() {
         return this.useParent && !(this.ids.length == 1 && this.ids[0] == 0)
-      }
+      },
     },
     methods: {
       goParentList() {
