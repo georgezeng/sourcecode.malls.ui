@@ -249,30 +249,21 @@
         this.recollectIds(selection)
       },
       bulkDisableStatus() {
-        this.setLoading(true)
-        let ids = []
-        this.selection.forEach(item => {
-          ids.push(item.id)
-        })
-        this.updateStatusHandler(ids, false).then(res => {
-          this.setLoading(false)
-          this.bulkStatusModal = false
-          Message.success(this.disableStatusText + '成功')
-          this.load()
-        }).catch(ex => {
-          this.setLoading(false)
-        })
+        this.bulkTriggerStatus(false, this.disableStatusText)
       },
       bulkEnableStatus() {
+        this.bulkTriggerStatus(true, this.enableStatusText)
+      },
+      bulkTriggerStatus(enable, txt) {
         this.setLoading(true)
         let ids = []
         this.selection.forEach(item => {
           ids.push(item.id)
         })
-        this.updateStatusHandler(ids, true).then(res => {
+        this.updateStatusHandler(ids, enable).then(res => {
           this.setLoading(false)
           this.bulkStatusModal = false
-          Message.success(this.enableStatusText + '成功')
+          Message.success(this.txt + '成功')
           this.load()
         }).catch(ex => {
           this.setLoading(false)
@@ -310,12 +301,12 @@
           this.selection = selection
         }
       },
-      triggerStatus(item) {
+      triggerStatus(item, extend) {
         this.setLoading(true)
         let action = item.enabled ? this.disableStatusText : this.enableStatusText
         let ids = []
         ids.push(item.id)
-        this.updateStatusHandler(ids, !item.enabled).then(res => {
+        this.updateStatusHandler(ids, !item.enabled, extend).then(res => {
           this.setLoading(false)
           Message.success(action + '成功')
           this.load()
