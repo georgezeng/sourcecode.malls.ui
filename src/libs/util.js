@@ -422,18 +422,23 @@ export const multiDecartesian = (data) => {
   }
 }
 
-function decartesian(a, b) {
+function decartesian (a, b) {
   var ret = []
-  for (var i = 0; i < a.length; i++) {
-    for (var j = 0; j < b.length; j++) {
-      ret.push(ft(a[i], b[j]))
+  if (b && b.length) {
+    for (var i = 0; i < a.length; i++) {
+      for (var j = 0; j < b.length; j++) {
+        ret.push(ft(a[i], b[j]))
+      }
     }
+  } else {
+    ret = a
   }
   return ret
 }
 
-function ft(a, b) {
+function ft (a, b) {
   if (!(a instanceof Array)) a = [a]
-  a.push(b)
-  return a
+  var ret = a.concat()
+  ret.push(b)
+  return ret
 }
