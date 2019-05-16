@@ -31,19 +31,18 @@ const config = {
 
 switch (process.env.NODE_ENV) {
   case 'development':
-    config.baseUrl = 'http://localhost:9090'
+    config.baseUrl = 'http://localhost:9000'
     config.publicBucketDomain = 'https://malls-admin-public-local.oss-cn-shenzhen.aliyuncs.com/'
     break
 
   case 'uat':
-    config.baseUrl = 'http://localhost:9090'
+    config.baseUrl = 'http://system.bsxkj.com:9000'
     config.publicBucketDomain = 'https://malls-admin-public-uat.oss-cn-shenzhen.aliyuncs.com/'
     break
 
   default:
     config.baseUrl = ''
-    // config.publicBucketDomain = 'https://malls-admin-public-live.oss-cn-shenzhen.aliyuncs.com/'
-    config.publicBucketDomain = 'https://malls-admin-public-local.oss-cn-shenzhen.aliyuncs.com/'
+    config.publicBucketDomain = 'https://malls-admin-public-live.oss-cn-shenzhen.aliyuncs.com/'
 }
 
 export default config
