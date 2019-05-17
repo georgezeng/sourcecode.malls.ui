@@ -36,7 +36,7 @@ switch (process.env.NODE_ENV) {
     break
 
   case 'uat':
-    config.baseUrl = 'https://system.bsxkj.com:9000'
+    config.baseUrl = 'http://47.106.238.180:9000'
     config.publicBucketDomain = 'https://malls-admin-public-uat.oss-cn-shenzhen.aliyuncs.com/'
     break
 
