@@ -46,7 +46,7 @@
       'height'
     ],
     data() {
-      let format = this.formats ? this.formats : ['png']
+      let format = this.formats ? this.formats : ['png', 'jpeg', 'jpg']
       let size = this.maxSize ? parseInt(this.maxSize) : 3000
       let previewWidth = this.width ? this.width : 'auto'
       let previewHeight = this.height ? this.height : 'auto'

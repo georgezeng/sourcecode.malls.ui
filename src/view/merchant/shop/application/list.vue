@@ -14,7 +14,7 @@
       :title="modalTitle" :closable="false">
       <Form>
         <FormItem label="域名">
-          {{deployModal.item.domain}}.sourcecode.com
+          {{deployModal.item.domain}}
         </FormItem>
         <FormItem v-if="deployModal.item.androidType" label="">
           <Upload

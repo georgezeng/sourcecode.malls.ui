@@ -49,7 +49,7 @@
       'tempErrorText'
     ],
     data() {
-      let format = this.formats ? this.formats : ['png']
+      let format = this.formats ? this.formats : ['png', 'jpeg', 'jpg']
       let size = this.maxSize ? parseInt(this.maxSize) : 3000
       return {
         format,
