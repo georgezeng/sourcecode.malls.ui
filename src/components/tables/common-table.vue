@@ -31,6 +31,10 @@
           </li>
         </ul>
       </div>
+      <div style="margin-top: 20px;" v-if="!toEnable && useReason">
+        <Input v-model="reason" type="textarea" :autosize="{minRows: 2, maxRows: 5}"
+               placeholder="输入审核失败原因"/>
+      </div>
       <div slot="footer" v-if="!toEnable">
         <Button type="error" size="large" long :loading="loading" @click="bulkDisableStatus">{{disableStatusText}}
         </Button>
@@ -50,17 +54,20 @@
       </Select>
       <slot></slot>
       <Button v-if="showBackBtn" class="float-right margin-left" @click="goParentList" type="success">返回</Button>
-      <Button v-if="showStatusBtns" @click="bulkStatusModal=true;toEnable=false;" :disabled="disableBtnDisabled"
+      <Button v-if="showStatusBtns" @click="bulkStatusModal=true;toEnable=false;reason=null;"
+              :disabled="disableBtnDisabled"
               class="float-right" type="error">
         批量{{disableStatusText}}
       </Button>
-      <Button v-if="showStatusBtns" @click="bulkStatusModal=true;toEnable=true;" :disabled="enableBtnDisabled"
+      <Button v-if="showStatusBtns" @click="bulkStatusModal=true;toEnable=true;reason=null;"
+              :disabled="enableBtnDisabled"
               class="margin-left float-right margin-right" type="success">批量{{enableStatusText}}
       </Button>
       <Button v-if="!disableDelete" @click="bulkDeleteModal=true" :disabled="deleteBtnDisabled" class="float-right"
               type="error">批量{{deleteTxt}}
       </Button>
-      <Button v-if="!disableAddBtn" @click="goAdd" class="float-right margin-right" type="primary">{{addBtnTxt}}</Button>
+      <Button v-if="!disableAddBtn" @click="goAdd" class="float-right margin-right" type="primary">{{addBtnTxt}}
+      </Button>
       <div class="clearfix"></div>
       <Table class="margin-top-bottom" :loading="loading" :data="list" :columns="columns"
              @on-select-all="enableBtns"
@@ -92,6 +99,7 @@
       'disableStatusText',
       'status',
       'useStatus',
+      'useReason',
       'disableDelete',
       'searchText',
       'pageSize',
@@ -135,6 +143,7 @@
             order: this.initSortOrder ? this.initSortOrder : 'ASC'
           }
         },
+        reason: null,
         total: 0,
         list: [],
         selection: [],
@@ -262,39 +271,50 @@
           ids.push(item.id)
         })
         let parentId = this.queryInfo.data.parent ? this.queryInfo.data.parent.id : 0
-        this.updateStatusHandler(ids, enable, parentId).then(res => {
+        this.updateStatusHandler(ids, enable, parentId, this.reason).then(res => {
           this.setLoading(false)
           this.bulkStatusModal = false
-          Message.success(this.txt + '成功')
+          Message.success(txt + '成功')
           this.load()
         }).catch(ex => {
           this.setLoading(false)
         })
       },
       enableStatusBtn(selection) {
-        if (this.queryInfo.data.statusText === 'true') {
-          this.disableBtnDisabled = false
-          this.enableBtnDisabled = true
-        } else if (this.queryInfo.data.statusText === 'false') {
-          this.disableBtnDisabled = true
-          this.enableBtnDisabled = false
+        if (!this.useReason) {
+          if (this.queryInfo.data.statusText === 'true') {
+            this.disableBtnDisabled = false
+            this.enableBtnDisabled = true
+          } else if (this.queryInfo.data.statusText === 'false') {
+            this.disableBtnDisabled = true
+            this.enableBtnDisabled = false
+          } else {
+            this.disableBtnDisabled = false
+            this.enableBtnDisabled = false
+          }
         } else {
           this.disableBtnDisabled = false
           this.enableBtnDisabled = false
         }
+
         this.recollectIds(selection)
       },
       disableStatusBtn(selection) {
-        let noRecord = !selection || selection.length == 0
-        if (this.queryInfo.data.statusText === 'true') {
-          this.disableBtnDisabled = true
-          this.enableBtnDisabled = noRecord
-        } else if (this.queryInfo.data.statusText === 'false') {
-          this.disableBtnDisabled = noRecord
-          this.enableBtnDisabled = true
+        if (!this.useReason) {
+          let noRecord = !selection || selection.length == 0
+          if (this.queryInfo.data.statusText === 'true') {
+            this.disableBtnDisabled = true
+            this.enableBtnDisabled = noRecord
+          } else if (this.queryInfo.data.statusText === 'false') {
+            this.disableBtnDisabled = noRecord
+            this.enableBtnDisabled = true
+          } else {
+            this.disableBtnDisabled = noRecord
+            this.enableBtnDisabled = noRecord
+          }
         } else {
-          this.disableBtnDisabled = noRecord
-          this.enableBtnDisabled = noRecord
+          this.disableBtnDisabled = false
+          this.enableBtnDisabled = false
         }
         this.recollectIds(selection)
       },

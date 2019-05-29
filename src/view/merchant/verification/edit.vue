@@ -1,4 +1,4 @@
-<style>
+<style scoped lang="less">
   .unpass {
     background-image: url('../../../assets/images/img_stamp_unpass.png');
     width: 100px;

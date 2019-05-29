@@ -141,7 +141,7 @@ export default [
       {
         path: 'User/List',
         name: 'UserList',
-        component: () => import('@/view/system-setting/user/list.vue'),
+        component: () => import('@/view/system/user/list.vue'),
         meta: {
           icon: 'md-funnel',
           title: '用户列表',
@@ -159,12 +159,12 @@ export default [
           access: ['AUTH_SUPER_ADMIN', 'AUTH_USER_EDIT_PAGE'],
           notCache: true
         },
-        component: () => import('@/view/system-setting/user/edit.vue')
+        component: () => import('@/view/system/user/edit.vue')
       },
       {
         path: 'Role/List',
         name: 'RoleList',
-        component: () => import('@/view/system-setting/role/list.vue'),
+        component: () => import('@/view/system/role/list.vue'),
         meta: {
           icon: 'md-funnel',
           title: '角色列表',
@@ -182,12 +182,12 @@ export default [
           access: ['AUTH_SUPER_ADMIN', 'AUTH_ROLE_EDIT_PAGE'],
           notCache: true
         },
-        component: () => import('@/view/system-setting/role/edit.vue')
+        component: () => import('@/view/system/role/edit.vue')
       },
       {
         path: 'Authority/List',
         name: 'AuthorityList',
-        component: () => import('@/view/system-setting/authority/list.vue'),
+        component: () => import('@/view/system/authority/list.vue'),
         meta: {
           icon: 'md-funnel',
           title: '权限列表',
@@ -205,37 +205,9 @@ export default [
           access: ['AUTH_SUPER_ADMIN', 'AUTH_AUTHORITY_EDIT_PAGE'],
           notCache: true
         },
-        component: () => import('@/view/system-setting/authority/edit.vue')
+        component: () => import('@/view/system/authority/edit.vue')
       }
     ]
-  },
-
-  {
-    path: '/401',
-    name: 'error_401',
-    meta: {
-      title: '401',
-      hideInMenu: true
-    },
-    component: () => import('@/view/error-page/401.vue')
-  },
-  {
-    path: '/500',
-    name: 'error_500',
-    meta: {
-      title: '500',
-      hideInMenu: true
-    },
-    component: () => import('@/view/error-page/500.vue')
-  },
-  {
-    path: '*',
-    name: 'error_404',
-    meta: {
-      title: '404',
-      hideInMenu: true
-    },
-    component: () => import('@/view/error-page/404.vue')
   },
 
   {
@@ -720,5 +692,33 @@ export default [
         ]
       }
     ]
-  }
+  },
+
+  {
+    path: '/401',
+    name: 'error_401',
+    meta: {
+      title: '401',
+      hideInMenu: true
+    },
+    component: () => import('@/view/error-page/401.vue')
+  },
+  {
+    path: '/500',
+    name: 'error_500',
+    meta: {
+      title: '500',
+      hideInMenu: true
+    },
+    component: () => import('@/view/error-page/500.vue')
+  },
+  {
+    path: '*',
+    name: 'error_404',
+    meta: {
+      title: '404',
+      hideInMenu: true
+    },
+    component: () => import('@/view/error-page/404.vue')
+  },
 ]

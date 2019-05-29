@@ -55,6 +55,7 @@
           {title: '手机号', key: 'mobile', sortable: true},
           {
             title: '状态',
+            key: 'enabled',
             sortable: true,
             render: (h, params) => {
               return h('span', params.row.enabled ? '启用中' : '禁用中')

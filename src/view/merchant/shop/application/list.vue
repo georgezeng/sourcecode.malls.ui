@@ -14,7 +14,7 @@
       :title="modalTitle" :closable="false">
       <Form>
         <FormItem label="域名">
-          {{deployModal.item.domain}}
+          <Input v-model="deployModal.item.domain" />
         </FormItem>
         <FormItem v-if="deployModal.item.androidType" label="">
           <Upload
@@ -117,7 +117,10 @@
           iosErrorText: '',
           item: {
             id: 0,
-            name: ''
+            name: null,
+            domain: null,
+            iosUrl: null,
+            androidUrl: null
           }
         },
         data: {
@@ -206,6 +209,9 @@
         this.deployModal.item = {
           id: 0,
           name: '',
+          domain: null,
+          iosUrl: null,
+          androidUrl: null
         }
         this.deployModal.androidUploaded = false
         this.deployModal.androidErrorText = ''
@@ -225,6 +231,7 @@
         this.setLoading(true)
         let data = {
           id: this.deployModal.item.id,
+          domain: this.deployModal.item.domain,
           status: this.deployModal.item.status.name,
           androidUrl: this.deployModal.item.androidUrl,
           iosUrl: this.deployModal.item.iosUrl
