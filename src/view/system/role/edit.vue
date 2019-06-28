@@ -20,12 +20,22 @@
                  placeholder="输入关于角色的一些描述"></Input>
         </FormItem>
         <FormItem label="权限">
-          <MultiSelectors :leftList="authLeftList" :rightList="authRightList" :originLeftList="originAuthLeftList"
-                          :originRightList="originAuthRightList" @set-multi-selectors-data="setAuthLists"/>
+          <Transfer
+            :data="authLeftList"
+            :target-keys="authRightList"
+            filterable
+            :list-style="{width: '300px', height: '400px'}"
+            :filter-method="filterList"
+            @on-change="changeTargetAuth"></Transfer>
         </FormItem>
         <FormItem label="用户">
-          <MultiSelectors :leftList="userLeftList" :rightList="userRightList" :originLeftList="originUserLeftList"
-                          :originRightList="originUserRightList" @set-multi-selectors-data="setUserLists"/>
+          <Transfer
+            :data="userLeftList"
+            :target-keys="userRightList"
+            filterable
+            :list-style="{width: '300px', height: '400px'}"
+            :filter-method="filterList"
+            @on-change="changeTargetUser"></Transfer>
         </FormItem>
       </Form>
     </Card>
@@ -36,15 +46,13 @@
   import API from '@/api/role'
   import AuthAPI from '@/api/authority'
   import UserAPI from '@/api/users'
-  import MultiSelectors from '@/components/multi-selectors/multi-selectors'
-  import { Message } from 'iview'
+  import {Message} from 'iview'
 
   export default {
     name: 'RoleEdit',
     components: {
-      MultiSelectors
     },
-    data () {
+    data() {
       return {
         loading: false,
         form: {
@@ -55,16 +63,10 @@
           authorities: [],
           users: []
         },
-        authorities: [],
         authLeftList: [],
         authRightList: [],
-        originAuthLeftList: [],
-        originAuthRightList: [],
-        users: [],
         userLeftList: [],
         userRightList: [],
-        originUserLeftList: [],
-        originUserRightList: [],
         rules: {
           code: [
             {required: true, message: '编码不能为空', trigger: 'blur'},
@@ -81,7 +83,42 @@
       }
     },
     methods: {
-      load () {
+      filterList(data, query) {
+        return data.label.indexOf(query) > -1;
+      },
+      changeTargetUser(newTargetKeys) {
+        this.userRightList = newTargetKeys;
+        this.form.users = []
+        for (let i in this.userRightList) {
+          const key = this.userRightList[i]
+          for (let j in this.userLeftList) {
+            const item = this.userLeftList[j]
+            if (item.key == key) {
+              this.form.users.push({
+                id: key
+              })
+              break
+            }
+          }
+        }
+      },
+      changeTargetAuth(newTargetKeys) {
+        this.authRightList = newTargetKeys;
+        this.form.authorities = []
+        for (let i in this.authRightList) {
+          const key = this.authRightList[i]
+          for (let j in this.authLeftList) {
+            const item = this.authLeftList[j]
+            if (item.key == key) {
+              this.form.authorities.push({
+                id: key
+              })
+              break
+            }
+          }
+        }
+      },
+      load() {
         if (this.form.id) {
           this.loading = true
           API.load(this.form.id).then(data => {
@@ -89,32 +126,22 @@
             let arr = []
             for (let i in data.authorities) {
               let item = data.authorities[i]
-              arr.push({
-                key: item.id,
-                text: item.name,
-                selected: false
-              })
+              arr.push(item.id)
             }
             this.authRightList = arr
-            this.originAuthRightList = arr.concat()
             arr = []
             for (let i in data.users) {
               let item = data.users[i]
-              arr.push({
-                key: item.id,
-                text: item.username,
-                selected: false
-              })
+              arr.push(item.id)
             }
             this.userRightList = arr
-            this.originUserRightList = arr.concat()
             this.loading = false
           }).catch(ex => {
             this.loading = false
           })
         }
       },
-      loadAuthorities () {
+      loadAuthorities() {
         this.loading = true
         AuthAPI.list({
           data: null,
@@ -131,12 +158,10 @@
               let item = result.list[i]
               arr.push({
                 key: item.id,
-                text: item.name,
-                selected: false
+                label: item.name
               })
             }
             this.authLeftList = arr
-            this.originAuthLeftList = arr.concat()
           }
           this.loading = false
         }).catch(ex => {
@@ -160,19 +185,17 @@
               let item = result.list[i]
               arr.push({
                 key: item.id,
-                text: item.username,
-                selected: false
+                label: item.username
               })
             }
             this.userLeftList = arr
-            this.originUserLeftList = arr.concat()
           }
           this.loading = false
         }).catch(ex => {
           this.loading = false
         })
       },
-      save () {
+      save() {
         this.$refs.form.validate().then(valid => {
           if (valid) {
             this.loading = true
@@ -186,73 +209,17 @@
           }
         })
       },
-      goList () {
+      goList() {
         this.$router.push({
           name: 'RoleList'
         })
       },
-      setAuthLists (leftList, rightList, reload) {
-        this.authLeftList = leftList
-        this.authRightList = rightList
-        if (reload) {
-          this.originAuthLeftList = leftList.concat()
-          this.originAuthRightList = rightList.concat()
-
-          this.form.authorities = []
-          for (let i in rightList) {
-            let item = rightList[i]
-            this.form.authorities.push({
-              id: item.key,
-              name: item.text,
-              selected: item.selected
-            })
-          }
-
-          this.authorities = []
-          for (let i in leftList) {
-            let item = leftList[i]
-            this.authorities.push({
-              id: item.key,
-              name: item.text,
-              selected: item.selected
-            })
-          }
-        }
-      },
-      setUserLists (leftList, rightList, reload) {
-        this.userLeftList = leftList
-        this.userRightList = rightList
-        if (reload) {
-          this.originUserLeftList = leftList.concat()
-          this.originUserRightList = rightList.concat()
-
-          this.form.users = []
-          for (let i in rightList) {
-            let item = rightList[i]
-            this.form.users.push({
-              id: item.key,
-              username: item.text,
-              selected: item.selected
-            })
-          }
-
-          this.users = []
-          for (let i in leftList) {
-            let item = leftList[i]
-            this.users.push({
-              id: item.key,
-              username: item.text,
-              selected: item.selected
-            })
-          }
-        }
-      }
     },
     computed: {
-      action () {
+      action() {
         return this.readOnly ? '编辑' : '新增'
       },
-      readOnly () {
+      readOnly() {
         return this.form.id != null && this.form.id != 0
       }
     },

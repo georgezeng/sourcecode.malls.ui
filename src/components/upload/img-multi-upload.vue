@@ -103,7 +103,7 @@
         this.errorText = '文件大小必须在' + this.size + 'KB以内'
       },
       remove() {
-        this.$emit('remove', this.index)
+        this.$emit('remove', parseInt(this.index), this.previewUrl == uploadPlaceholder)
       }
     },
     computed: {
@@ -120,7 +120,7 @@
           return hasPreview ? this.imgPrefix + this.previewUri : uploadPlaceholder
         },
         set(url) {
-          this.$emit('setPreviewUrl', url, this.index)
+          this.$emit('setPreviewUrl', url, parseInt(this.index))
         }
       },
     },

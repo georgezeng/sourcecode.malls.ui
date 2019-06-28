@@ -9,6 +9,9 @@
         <Button @click="goList" type="success">返回</Button>
       </div>
       <Form ref="form" :model="form" :rules="rules" :label-width="80">
+        <FormItem label="主副" prop="accountText" :class="{hidden: !isEdit}">
+          <Input v-model="form.accountText" readonly></Input>
+        </FormItem>
         <FormItem label="用户名" prop="username">
           <Input v-model="form.username" :readonly="isEdit"></Input>
         </FormItem>
@@ -20,9 +23,6 @@
         </FormItem>
         <FormItem label="确认密码" prop="confirmPassword">
           <Input type="password" v-model="form.confirmPassword"></Input>
-        </FormItem>
-        <FormItem label="手机号" prop="mobile">
-          <Input v-model="form.mobile" placeholder="输入手机号"></Input>
         </FormItem>
         <FormItem label="头像" prop="header">
           <Upload
@@ -42,8 +42,13 @@
           </Select>
         </FormItem>
         <FormItem label="角色">
-          <MultiSelectors :leftList="roleLeftList" :rightList="roleRightList" :originLeftList="originRoleLeftList"
-                          :originRightList="originRoleRightList" @set-multi-selectors-data="setRoleLists"/>
+          <Transfer
+            :data="roleLeftList"
+            :target-keys="roleRightList"
+            filterable
+            :list-style="{width: '300px', height: '400px'}"
+            :filter-method="filterRole"
+            @on-change="changeTargetRole"></Transfer>
         </FormItem>
       </Form>
     </Card>
@@ -53,17 +58,16 @@
 <script>
   import API from '@/api/users'
   import RoleAPI from '@/api/role'
-  import MultiSelectors from '@/components/multi-selectors/multi-selectors'
+  import Upload from '@/components/upload/img-one-line-upload'
   import {Message} from 'iview'
   import config from '@/config/index'
   import avatar from '@/assets/images/avatar.png'
-  import Upload from '@/components/upload/img-one-line-upload'
 
   const FAKE_PASSWORD = 'FakePwd123'
+
   export default {
     name: 'UserEdit',
     components: {
-      MultiSelectors,
       Upload
     },
     data() {
@@ -76,14 +80,14 @@
         }
       }
       return {
-        loading: false,
         avatar,
+        loading: false,
         form: {
           id: null,
+          accountText: '',
           username: '',
           email: '',
           password: '',
-          mobile: '',
           enabled: 'true',
           avatar: null,
           roles: []
@@ -92,11 +96,8 @@
           {text: '使用中', value: 'true'},
           {text: '禁用中', value: 'false'}
         ],
-        roles: [],
         roleLeftList: [],
         roleRightList: [],
-        originRoleLeftList: [],
-        originRoleRightList: [],
         rules: {
           username: [
             {required: true, message: '用户名不能为空', trigger: 'change'},
@@ -119,14 +120,30 @@
           confirmPassword: [
             {required: !isEdit, message: '确认密码不能为空', trigger: 'change'},
             {required: !isEdit, validator: confirmPwdCheck, trigger: 'change'}
-          ],
-          mobile: [
-            {type: 'string', pattern: /^\d{11}$/, message: '手机号必须是11位数字', trigger: 'change'}
           ]
         }
       }
     },
     methods: {
+      filterRole(data, query) {
+        return data.label.indexOf(query) > -1;
+      },
+      changeTargetRole (newTargetKeys) {
+        this.roleRightList = newTargetKeys;
+        this.form.roles = []
+        for (let i in this.roleRightList) {
+          const key = this.roleRightList[i]
+          for (let j in this.roleLeftList) {
+            const item = this.roleLeftList[j]
+            if (item.key == key) {
+              this.form.roles.push({
+                id: key
+              })
+              break
+            }
+          }
+        }
+      },
       load() {
         if (this.form.id) {
           this.loading = true
@@ -136,16 +153,11 @@
             let arr = []
             for (let i in data.roles) {
               let item = data.roles[i]
-              arr.push({
-                key: item.id,
-                text: item.name,
-                selected: false
-              })
+              arr.push(item.id)
             }
             this.form.password = FAKE_PASSWORD
             this.form.confirmPassword = FAKE_PASSWORD
             this.roleRightList = arr
-            this.originRoleRightList = arr.concat()
             this.loading = false
           }).catch(ex => {
             this.loading = false
@@ -164,17 +176,15 @@
           }
         }).then(result => {
           if (result.total > 0) {
-            let arr = []
+            const arr = []
             for (let i in result.list) {
               let item = result.list[i]
               arr.push({
                 key: item.id,
-                text: item.name,
-                selected: false
+                label: item.name
               })
             }
             this.roleLeftList = arr
-            this.originRoleLeftList = arr.concat()
           }
           this.loading = false
         }).catch(ex => {
@@ -184,7 +194,6 @@
       save() {
         this.$refs.form.validate().then(valid => {
           if (valid) {
-            this.loading = true
             let data = {...this.form}
             if(data.password === FAKE_PASSWORD) {
               data.password = null
@@ -206,34 +215,6 @@
           name: 'UserList'
         })
       },
-      setRoleLists(leftList, rightList, reload) {
-        this.roleLeftList = leftList
-        this.roleRightList = rightList
-        if (reload) {
-          this.originRoleLeftList = leftList.concat()
-          this.originRoleRightList = rightList.concat()
-
-          this.form.roles = []
-          for (let i in rightList) {
-            let item = rightList[i]
-            this.form.roles.push({
-              id: item.key,
-              name: item.text,
-              selected: item.selected
-            })
-          }
-
-          this.roles = []
-          for (let i in leftList) {
-            let item = leftList[i]
-            this.roles.push({
-              id: item.key,
-              name: item.text,
-              selected: item.selected
-            })
-          }
-        }
-      },
       setPreviewUrl(url, index) {
         this.form.avatar = url
       },
@@ -251,7 +232,7 @@
         return this.form.id != null && this.form.id != 0
       },
       uploadUrl() {
-        return config.baseUrl + '/user/file/upload/params/' + this.form.id
+        return config.baseUrl + '/user/file/upload/params' + this.form.id
       },
       imgPrefix() {
         return config.baseUrl + '/user/file/load/params/' + this.form.id + '?filePath='
