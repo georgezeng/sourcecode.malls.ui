@@ -33,8 +33,8 @@
     <FormItem>
       <Button @click="handleSubmit" type="primary" long>登录</Button>
     </FormItem>
-    <a @click="go('Register')" class="registerBtn">注册</a>
-    <a @click="go('ForgetPassword')" class="float-right">忘记密码?</a>
+    <!--<a @click="go('Register')" class="registerBtn">注册</a>
+    <a @click="go('ForgetPassword')" class="float-right">忘记密码?</a>-->
   </Form>
 </template>
 <script>

@@ -32,17 +32,17 @@ const config = {
 switch (process.env.NODE_ENV) {
   case 'development':
     config.baseUrl = 'http://localhost:9000'
-    config.publicBucketDomain = 'https://malls-admin-public-local.oss-cn-shenzhen.aliyuncs.com/'
+    config.publicBucketDomain = 'https://mall-public-local.oss-cn-zhangjiakou.aliyuncs.com/'
     break
 
   case 'uat':
-    config.baseUrl = 'https://system-server.bsxkj.com'
-    config.publicBucketDomain = 'https://malls-admin-public-uat.oss-cn-shenzhen.aliyuncs.com/'
+    config.baseUrl = 'https://uat.system-server.bsxkj.com'
+    config.publicBucketDomain = 'https://mall-public-uat.oss-cn-zhangjiakou.aliyuncs.com/'
     break
 
   default:
-    config.baseUrl = ''
-    config.publicBucketDomain = 'https://malls-admin-public-live.oss-cn-shenzhen.aliyuncs.com/'
+    config.baseUrl = 'https://system-server.bsxkj.com'
+    config.publicBucketDomain = 'https://mall-public-prod.oss-cn-zhangjiakou.aliyuncs.com/'
 }
 
 export default config
