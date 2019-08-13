@@ -18,7 +18,7 @@
       </div>
     </Modal>
 
-    <Modal v-if="useStatus" v-model="bulkStatusModal" width="360">
+    <Modal v-if="useStatus && !useStatusQueryOnly" v-model="bulkStatusModal" width="360">
       <p slot="header" style="color:#f60;text-align:center">
         <Icon type="ios-information-circle"></Icon>
         <span>操作提示</span>
@@ -48,7 +48,11 @@
     <Card>
       <Input v-model="queryInfo.data.searchText" search enter-button @on-search="load"
              style="float: left; width: 200px; margin-bottom: 5px;"/>
-      <Select v-if="useStatus" @on-change="load" style="width: 100px; margin-left: 5px;"
+      <DatePicker @on-clear="clearDate" @on-change="changeDate" v-if="useDateRange" v-model="queryInfo.dateRange"
+                  type="daterange"
+                  placement="bottom-end"
+                  placeholder="选择日期范围" style="width: 200px; margin-left: 5px;"></DatePicker>
+      <Select v-if="useStatus" @on-change="load" style="width: 200px; margin-left: 5px;"
               v-model="queryInfo.data.statusText">
         <Option v-for="item in statusList" :value="item.value" :key="item.value">{{item.label}}</Option>
       </Select>
@@ -90,6 +94,7 @@
     name: 'CommonTable',
     components: {},
     props: [
+      'useDateRange',
       'hidePage',
       'listHandler',
       'deleteHandler',
@@ -114,6 +119,7 @@
       'initSortProperty',
       'initSortOrder',
       'statusItemName',
+      'useStatusQueryOnly',
       'queryData',
       'parentPageName',
       'subPageName',
@@ -130,6 +136,8 @@
         ids: [],
         queryInfo: {
           data: {
+            startTime: null,
+            endTime: null,
             parent: {
               id: 0
             },
@@ -170,6 +178,16 @@
       },
     },
     methods: {
+      clearDate() {
+        this.queryInfo.data.startTime = null
+        this.queryInfo.data.endTime = null
+        this.load()
+      },
+      changeDate(dateRange, type) {
+        this.queryInfo.data.startTime = dateRange[0]
+        this.queryInfo.data.endTime = dateRange[1]
+        this.load()
+      },
       goParentList() {
         this.ids.splice(this.ids.length - 1, 1)
         this.$store.commit('setQueryInfo', {queryInfo: null, routeName: this.$router.currentRoute.name})
@@ -187,12 +205,15 @@
       setLoading(loading) {
         this.$emit('setLoading', loading)
       },
-      load() {
+      load(pageNum) {
         this.$emit('setQueryData', this.queryInfo.data)
         if (this.queryData) {
-          this.queryInfo.data = this.queryData
+          this.queryInfo.data = {
+            ...this.queryInfo.data,
+            ...this.queryData
+          }
         }
-        this.changePage(1)
+        this.changePage(pageNum ? pageNum : 1)
       },
       sortChange({key, order}) {
         if (!order) order = 'ASC'
@@ -275,7 +296,7 @@
           this.setLoading(false)
           this.bulkStatusModal = false
           Message.success(txt + '成功')
-          this.load()
+          this.load(this.queryInfo.page.num)
         }).catch(ex => {
           this.setLoading(false)
         })
@@ -332,7 +353,7 @@
         this.updateStatusHandler(ids, !item.enabled, parentId).then(res => {
           this.setLoading(false)
           Message.success(action + '成功')
-          this.load()
+          this.load(this.queryInfo.page.num)
         }).catch(ex => {
           this.setLoading(false)
         })
@@ -395,6 +416,7 @@
         this.queryInfo.data.parent.id = this.ids[this.ids.length - 1]
         this.$emit('initForParentId', this.queryInfo.data.parent.id)
       }
+      this.$emit('setLoad', this.load)
       this.$emit('setGoEdit', this.goEdit)
       this.$emit('setDeleteData', this.deleteData)
       this.$emit('setTriggerStatus', this.triggerStatus)
