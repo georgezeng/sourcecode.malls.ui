@@ -52,7 +52,7 @@
                   type="daterange"
                   placement="bottom-end"
                   placeholder="选择日期范围" style="width: 200px; margin-left: 5px;"></DatePicker>
-      <Select v-if="useStatus" @on-change="load" style="width: 200px; margin-left: 5px;"
+      <Select v-if="useStatus" @on-change="load()" style="width: 200px; margin-left: 5px;"
               v-model="queryInfo.data.statusText">
         <Option v-for="item in statusList" :value="item.value" :key="item.value">{{item.label}}</Option>
       </Select>
