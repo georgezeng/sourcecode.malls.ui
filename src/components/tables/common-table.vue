@@ -46,7 +46,7 @@
     </Modal>
 
     <Card>
-      <Input v-model="queryInfo.data.searchText" search enter-button @on-search="load"
+      <Input v-model="queryInfo.data.searchText" search enter-button @on-search="load()"
              style="float: left; width: 200px; margin-bottom: 5px;"/>
       <DatePicker @on-clear="clearDate" @on-change="changeDate" v-if="useDateRange" v-model="queryInfo.dateRange"
                   type="daterange"
