@@ -31,7 +31,7 @@ ajax.interceptors.response.use(function (response) {
     alertError(response.data)
     return Promise.reject(response.data)
   }
-  return response.data.data || response.data.datas
+  return response.data.datas || response.data.data
 }, function (ex) {
   handleError(ex)
   return Promise.reject(ex)
