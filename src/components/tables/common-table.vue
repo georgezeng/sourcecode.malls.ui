@@ -79,6 +79,7 @@
              @on-select="enableBtns" @on-sort-change="sortChange"
              @on-select-all-cancel="disableBtns" @on-select-cancel="disableBtns"/>
       <Page v-if="!hidePage" :total="total"
+            show-total
             :page-size="queryInfo.page.size"
             :current="queryInfo.page.num"
             @on-change="changePage"
@@ -132,7 +133,8 @@
       'initPageSize',
       'addBtnText',
       'deleteText',
-      'initStatusText'
+      'initStatusText',
+      'from'
     ],
     data() {
       return {
@@ -373,6 +375,9 @@
           params.id = this.ids[0]
         } else {
           params.ids = this.ids.join(',')
+        }
+        if(this.from) {
+          params.from = this.from
         }
         this.$router.push({
           name: this.editPageName,
