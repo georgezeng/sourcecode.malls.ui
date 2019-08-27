@@ -46,7 +46,8 @@
     </Modal>
 
     <Card>
-      <span v-if="title != null && title != ''" style="position: relative; top: 5px; float: left; margin-right: 20px; font-weight: bold;">{{title}}</span>
+      <span v-if="title != null && title != ''"
+            style="position: relative; top: 5px; float: left; margin-right: 20px; font-weight: bold;">{{title}}</span>
       <Input v-if="!disableSearch" v-model="queryInfo.data.searchText" search enter-button @on-search="load()"
              style="float: left; width: 200px; margin-bottom: 5px;"/>
       <DatePicker @on-clear="clearDate" @on-change="changeDate" v-if="useDateRange" v-model="queryInfo.dateRange"
@@ -134,7 +135,9 @@
       'addBtnText',
       'deleteText',
       'initStatusText',
-      'from'
+      'from',
+      'needReload',
+      'topPageName'
     ],
     data() {
       return {
@@ -197,12 +200,22 @@
         this.ids.splice(this.ids.length - 1, 1)
         this.$store.commit('setQueryInfo', {queryInfo: null, routeName: this.$router.currentRoute.name})
         this.$store.commit('closeTag', this.$router.currentRoute)
-        this.$router.push({
-          name: this.parentPageName,
-          params: {
-            ids: this.ids.join(',')
-          }
-        })
+        if (this.ids.length > 0) {
+          this.$router.push({
+            name: this.parentPageName,
+            params: {
+              ids: this.ids.join(',')
+            }
+          })
+        } else {
+          this.$router.push({
+            name: this.topPageName
+          })
+        }
+        if (this.needReload) {
+          this.$emit('prepareLoadParent', this.ids[this.ids.length - 1])
+          this.load()
+        }
       },
       setPageList(list) {
         this.list = list
@@ -370,13 +383,11 @@
         this.ids.push(id)
         this.$store.commit('setQueryInfo', {queryInfo: this.queryInfo, routeName: this.$router.currentRoute.name})
         this.$store.commit('closeTag', this.$router.currentRoute)
-        let params = {}
-        if (this.ids.length == 1) {
-          params.id = this.ids[0]
-        } else {
-          params.ids = this.ids.join(',')
+        let params = {
+          id: this.ids[0],
+          ids: this.ids.join(',')
         }
-        if(this.from) {
+        if (this.from) {
           params.from = this.from
         }
         this.$router.push({
@@ -394,6 +405,9 @@
             ids: this.ids.join(',')
           }
         })
+        if (this.needReload) {
+          this.load()
+        }
       },
       updateList() {
         if (this.loading) {
