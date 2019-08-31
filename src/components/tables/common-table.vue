@@ -169,6 +169,7 @@
         bulkStatusModal: false,
         enableBtnDisabled: true,
         disableBtnDisabled: true,
+        goBack: false,
       }
     },
     computed: {
@@ -197,6 +198,7 @@
         this.load()
       },
       goParentList() {
+        this.goBack = true
         this.ids.splice(this.ids.length - 1, 1)
         this.$store.commit('setQueryInfo', {queryInfo: null, routeName: this.$router.currentRoute.name})
         this.$store.commit('closeTag', this.$router.currentRoute)
@@ -416,7 +418,7 @@
         }
         let routeName = this.$router.currentRoute.name
         let queryInfo = this.$store.state.app.queryInfo[routeName]
-        if (queryInfo) {
+        if (!this.goBack && queryInfo) {
           this.$store.commit('setQueryInfo', {queryInfo: null, routeName})
           this.queryInfo = queryInfo
           this.changePage()
