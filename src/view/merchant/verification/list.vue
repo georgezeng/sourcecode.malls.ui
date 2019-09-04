@@ -12,10 +12,8 @@
     editPageName="MerchantVerificationEdit"
     :filteredPageNames="['MerchantVerificationEdit']"
     :listHandler="listHandler"
-    :queryData="data"
     @setLoading="setLoading"
     @setGoEdit="setGoEdit"
-    @setQueryData="setQueryData"
   >
   </CommonTable>
 </template>
@@ -49,10 +47,6 @@
             label: '全部'
           }
         ],
-        data: {
-          statusText: 'Checking',
-          searchText: ''
-        },
         loading: false,
         columns: [
           {title: '用户名', key: 'username', sortable: true},
@@ -90,9 +84,6 @@
     },
     methods: {
       listHandler: API.list,
-      setQueryData(data) {
-        this.data.searchText = data.searchText
-      },
       setLoading(loading) {
         this.loading = loading
       },

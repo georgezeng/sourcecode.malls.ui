@@ -64,10 +64,8 @@
       editPageName="MerchantShopApplicationEdit"
       :filteredPageNames="['MerchantShopApplicationEdit']"
       :listHandler="listHandler"
-      :queryData="data"
       @setLoading="setLoading"
       @setGoEdit="setGoEdit"
-      @setQueryData="setQueryData"
     >
     </CommonTable>
   </div>
@@ -122,10 +120,6 @@
             iosUrl: null,
             androidUrl: null
           }
-        },
-        data: {
-          statusText: 'Checking',
-          searchText: ''
         },
         loading: false,
         columns: [
@@ -245,9 +239,6 @@
         })
       },
       listHandler: API.list,
-      setQueryData(data) {
-        this.data.searchText = data.searchText
-      },
       setGoEdit(callback) {
         this.goEdit = callback
       }
