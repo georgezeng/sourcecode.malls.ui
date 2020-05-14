@@ -31,7 +31,7 @@ const config = {
 
 switch (process.env.NODE_ENV) {
   case 'development':
-    config.baseUrl = 'http://localhost:9000'
+    config.baseUrl = 'http://uat.system.firecontrol.server.wufire.cn'// 'http://localhost:9000'
     config.publicBucketDomain = 'https://mall-public-local.oss-cn-zhangjiakou.aliyuncs.com/'
     break
 
@@ -41,7 +41,7 @@ switch (process.env.NODE_ENV) {
     break
 
   default:
-    config.baseUrl = 'https://system-server.bsxkj.com'
+    config.baseUrl = 'https://system-server.dbjiaju.cn'
     config.publicBucketDomain = 'https://mall-public-prod.oss-cn-zhangjiakou.aliyuncs.com/'
 }
 
