@@ -31,12 +31,12 @@ const config = {
 
 switch (process.env.NODE_ENV) {
   case 'development':
-    config.baseUrl = 'http://uat.system.firecontrol.server.wufire.cn'// 'http://localhost:9000'
+    config.baseUrl = 'http://localhost:9000'
     config.publicBucketDomain = 'https://mall-public-local.oss-cn-zhangjiakou.aliyuncs.com/'
     break
 
   case 'uat':
-    config.baseUrl = 'https://uat-system-server.bsxkj.com'
+    config.baseUrl = 'https://uat-system-server.dobaishop.com'
     config.publicBucketDomain = 'https://mall-public-uat.oss-cn-zhangjiakou.aliyuncs.com/'
     break
 
